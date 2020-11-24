@@ -1,0 +1,27 @@
+{
+  "name": "projet_7",
+  "version": "1.0.0",
+  "description": "Projet 7",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/McFly91/P7_Aubert_Martin.git"
+  },
+  "author": "MArtin Aubert",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/McFly91/P7_Aubert_Martin/issues"
+  },
+  "homepage": "https://github.com/McFly91/P7_Aubert_Martin#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "helmet": "^4.2.0",
+    "mysql": "^2.18.1",
+    "nodemon": "^2.0.6"
+  }
+}
