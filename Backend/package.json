@@ -18,10 +18,13 @@
   },
   "homepage": "https://github.com/McFly91/P7_Aubert_Martin#readme",
   "dependencies": {
+    "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
+    "cryptr": "^6.0.2",
     "express": "^4.17.1",
     "express-rate-limit": "^5.2.3",
     "helmet": "^4.2.0",
+    "maskdata": "^1.1.2",
     "mysql": "^2.18.1",
     "nodemon": "^2.0.6"
   }
