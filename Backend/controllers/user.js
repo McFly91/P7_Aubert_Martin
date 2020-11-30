@@ -4,7 +4,9 @@ const bcrypt = require('bcrypt');
 const Cryptr = require('cryptr');
 const cryptr = new Cryptr(process.env.CRYPTR_secret);
 const connectionDB = require("../connexion_mysql");
+const jwt = require("jsonwebtoken");
 
+let decryptedEmails = [];
 
 exports.signup = (req, res, next) => {
 
@@ -12,7 +14,7 @@ exports.signup = (req, res, next) => {
     const passwordRegex = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})/;
     const nameRegex = /^[^\s@&"()!_$*€£`+=\/;?#<>]*[A-Za-z]{2,}[^@&()!_$*€£`+=\/;?#<>]*$/;
     
-    let decryptedEmails = [];
+    
 
     //userModel.encryptedEmails(decryptedEmails);
 
@@ -58,4 +60,39 @@ exports.signup = (req, res, next) => {
             return res.status(400).json({ message : "Veuillez réessayer avec une autre adresse email"})
         }
     });
+};
+
+exports.login = (req, res, next) => {
+    connectionDB.query("SELECT id, email, password FROM User;", function(error, results) {
+        if (error) throw error;
+        results = JSON.parse(JSON.stringify(results));
+        results.forEach((result => {
+            let decryptedEmail = cryptr.decrypt(result.email);
+            decryptedEmails.push(decryptedEmail);
+        }));
+        for (let i = 0; i < results.length ; i++) {
+            if(decryptedEmails[i].includes(req.body.email) === true) {
+                return bcrypt.compare(req.body.password, results[i].password)
+                    .then(
+                        valid => {
+                            console.log(decryptedEmails[i], req.body.password, results[i].password)
+                            if (!valid) {
+                                return res.status(401).json({ error : "Email ou mot de passe incorrect" });
+                            }
+                            res.status(200).json({
+                                userId: results[i].id,
+                                token: jwt.sign(
+                                    {userId: results[i].id},
+                                    process.env.TOKEN_secret,
+                                    {expiresIn: "24h"}
+                                )
+                            })
+                    })
+                    .catch(error => res.status(500).json({ error }))
+            }
+            else if (i === results.length - 1) {
+                return res.status(404).json({ error : "Email ou mot de passe incorrect" })
+            }
+        }
+    })
 };
