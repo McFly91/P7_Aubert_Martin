@@ -1,8 +1,8 @@
 const postModel = require("../models/post");
 const fs = require("fs");
+const { join } = require("path");
 
 //Regex pour la vérification des données
-const inputTitreRegex = /^[^\s@&"()!_$*€£`+=\/;?#<>]*[A-Za-z]{2,}[^@&()!_$*€£`+=\/;?#<>]*$/;
 const inputRegex = /^[^\s@&"()!_$*€£`+=\/;?#<>]*[A-Za-z0-9]{1,}/;
 
 exports.createPost = (req, res, next) => {
@@ -11,8 +11,7 @@ exports.createPost = (req, res, next) => {
     if (filename) {
             postObject.contenu_media = `${req.protocol}://${req.get("host")}/images/${filename}`;
     }
-    console.log(postObject)
-    if (inputTitreRegex.test(postObject.titre) && (postObject.contenu_text === null || (postObject.contenu_text !== null && inputRegex.test(postObject.contenu_text)))) {
+    if (inputRegex.test(postObject.titre) && (postObject.contenu_text === null || (postObject.contenu_text !== null && inputRegex.test(postObject.contenu_text)))) {
         postModel.postSchema(
             postObject.titre, 
             postObject.contenu_text, 
@@ -35,7 +34,24 @@ exports.modifyPost = (req, res, next) => {
 };
 
 exports.deletePost = (req, res, next) => {
-    
+    postModel.onePost(req.params.id)
+        .then(response => {
+                if (res.locals.userId === response[0].user_post) {
+                    if (response[0].contenu_media !== null) {
+                        const filename = response[0].contenu_media.split("/images/")[1];
+                        fs.unlink(`images/${filename}`, () => {
+                            res.status(200);
+                        })
+                    }
+                    postModel.delete(req.params.id)
+                        .then(() => res.status(200).json({ message : "Post supprimé"}))
+                        .catch(error => res.status(500).json({ error }))
+                }  
+                else {
+                    res.status(404).json({ message : "Vous ne pouvez pas supprimer un Post qui ne vous appartient pas" })
+                }
+        })
+        .catch(error => res.status(500).json(error))
 };
 
 exports.getOnePost = (req, res, next) => {
