@@ -1,6 +1,5 @@
 const postModel = require("../models/post");
 const fs = require("fs");
-const { join } = require("path");
 
 //Regex pour la vérification des données
 const inputRegex = /^[^\s@&"()!_$*€£`+=\/;?#<>]*[A-Za-z0-9]{1,}/;
