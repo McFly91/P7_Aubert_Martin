@@ -31,7 +31,39 @@ exports.createPost = (req, res, next) => {
 };
 
 exports.modifyPost = (req, res, next) => {
-    
+    postModel.onePost(req.params.id)
+        .then(response => {
+                if (res.locals.userId === response[0].user_post) {
+                    const postObject = req.file ?
+                        {
+                            ...JSON.parse(req.body.post),
+                            contenu_media : `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
+                        }  : { ...req.body };
+                    if (inputRegex.test(postObject.titre) && (postObject.contenu_text === null || (postObject.contenu_text !== null && inputRegex.test(postObject.contenu_text)))) {
+                        if (req.file) {
+                            const filename = response[0].contenu_media.split("/images/")[1];
+                            fs.unlink(`images/${filename}`, () => {
+                                console.log("Ancienne image remplacée");
+                            });
+                        }
+                        postModel.modify(postObject.titre, postObject.contenu_text, postObject.contenu_media, req.params.id)
+                            .then(() => res.status(200).json({ message : "Post modifié" }))
+                            .catch(error => res.status(500).json({ error }))
+                    }
+                    else {
+                        if (req.file) {
+                            fs.unlink(`images/${req.file.filename}`, () => {
+                                console.log("Image non enregistrée");
+                            })
+                        }
+                        return res.status(400).json({ error : "Erreur dans l'entrée des données, veuillez rentrer des informations pertinantes" });
+                    }
+                }
+                else {
+                    res.status(404).json({ message : "Vous ne pouvez pas modifier un Post qui ne vous appartient pas" })
+                }
+            })
+            .catch(error => res.status(500).json(error))
 };
 
 exports.deletePost = (req, res, next) => {

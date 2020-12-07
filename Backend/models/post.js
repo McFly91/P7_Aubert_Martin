@@ -22,6 +22,24 @@ exports.postSchema = (titre, contenu_text, contenu_media, user_post) => {
     } 
 }
 
+exports.modify = (titre, contenu_text, contenu_media, id) => {
+    try {
+        return new Promise((resolve) => {
+            connectionDB.query("UPDATE Post SET titre = ?, contenu_text = ?, contenu_media = ? WHERE id = ?;", [titre, contenu_text, contenu_media, id], (error, results) => {
+                if (results === undefined) {
+                    resolve (error = "Erreur dans la requête");
+                }
+                else {
+                    resolve (results);
+                }
+            });
+        });
+    }
+    catch (error) {
+        console.log(error);
+    };
+};
+
 exports.delete = (id) => {
     try {
         return new Promise((resolve) => {
