@@ -5,9 +5,11 @@ const fs = require("fs");
 const inputRegex = /^[^\s@&"()!_$*€£`+=\/;?#<>]*[A-Za-z0-9]{1,}/;
 
 exports.createPost = (req, res, next) => {
-    const postObject = JSON.parse(req.body.post);
-    const filename = req.file.filename;
-    if (filename) {
+    let postObject = req.body;
+    let filename;
+    if (req.file) {
+        filename = req.file.filename;
+        postObject = JSON.parse(req.body.post);
             postObject.contenu_media = `${req.protocol}://${req.get("host")}/images/${filename}`;
     }
     if (inputRegex.test(postObject.titre) && (postObject.contenu_text === null || (postObject.contenu_text !== null && inputRegex.test(postObject.contenu_text)))) {
@@ -19,9 +21,9 @@ exports.createPost = (req, res, next) => {
         res.status(201).json({ message : "Post enregistrée" });
     }
     else {
-        if (filename !== null) {
+        if (req.file) {
             fs.unlink(`images/${filename}`, () => {
-                res.status(400);
+                console.log("Image non enregistrée");
             })
         }
         return res.status(400).json({ error : "Erreur dans l'entrée des données, veuillez rentrer des informations pertinantes" });
