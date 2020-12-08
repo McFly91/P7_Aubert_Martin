@@ -1,21 +1,21 @@
 const connectionDB = require("../connexion_mysql");
 
-exports.postSchema = (titre, contenu_text, contenu_media, user_post) => {
+exports.postSchema = (titre, contenu_text, contenu_media, user_id) => {
 
     if ((contenu_text && contenu_media) !== null) {
-        connectionDB.query("INSERT INTO Post (titre, contenu_text, contenu_media, user_post) VALUES (?, ?, ?, ?);", [titre, contenu_text, contenu_media, user_post], (error, results) => {
+        connectionDB.query("INSERT INTO Post (titre, contenu_text, contenu_media, user_id) VALUES (?, ?, ?, ?);", [titre, contenu_text, contenu_media, user_id], (error, results) => {
             if (error) throw error;
             results;
         });
     }
     else if (contenu_media !== null) {
-        connectionDB.query("INSERT INTO Post (titre, contenu_media, user_post) VALUES (?, ?, ?);", [titre, contenu_media, user_post], (error, results) => {
+        connectionDB.query("INSERT INTO Post (titre, contenu_media, user_id) VALUES (?, ?, ?);", [titre, contenu_media, user_id], (error, results) => {
             if (error) throw error;
             results;
         });
     }
     else {
-        connectionDB.query("INSERT INTO Post (titre, contenu_text, user_post) VALUES (?, ?, ?);", [titre, contenu_text, user_post], (error, results) => {
+        connectionDB.query("INSERT INTO Post (titre, contenu_text, user_id) VALUES (?, ?, ?);", [titre, contenu_text, user_id], (error, results) => {
             if (error) throw error;
             results;
         });
