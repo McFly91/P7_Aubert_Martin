@@ -53,8 +53,8 @@ exports.modifyPost = (req, res, next) => {
                     else {
                         if (req.file) {
                             fs.unlink(`images/${req.file.filename}`, () => {
-                                console.log("Image non enregistrée");
-                            })
+                                console.log("Nouvelle image non enregistrée");
+                            });
                         }
                         return res.status(400).json({ error : "Erreur dans l'entrée des données, veuillez rentrer des informations pertinantes" });
                     }
@@ -63,7 +63,7 @@ exports.modifyPost = (req, res, next) => {
                     res.status(404).json({ message : "Vous ne pouvez pas modifier un Post qui ne vous appartient pas" })
                 }
             })
-            .catch(error => res.status(500).json(error))
+        .catch(error => res.status(500).json(error))
 };
 
 exports.deletePost = (req, res, next) => {
@@ -97,8 +97,4 @@ exports.getAllPosts = (req, res, next) => {
     postModel.allPost()
         .then(response => res.status(200).json(response))
         .catch(error => res.status(500).json({ error }))
-};
-
-exports.likePost = (req, res, next) => {
-    
 };
