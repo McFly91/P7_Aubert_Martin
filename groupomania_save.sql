@@ -16,14 +16,6 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Current Database: `groupomania`
---
-
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `groupomania` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-
-USE `groupomania`;
-
---
 -- Table structure for table `comment`
 --
 
@@ -41,7 +33,7 @@ CREATE TABLE `comment` (
   KEY `fk_user_id_comment` (`user_id`),
   CONSTRAINT `fk_post_comment` FOREIGN KEY (`post_id`) REFERENCES `post` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_user_id_comment` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -50,6 +42,7 @@ CREATE TABLE `comment` (
 
 LOCK TABLES `comment` WRITE;
 /*!40000 ALTER TABLE `comment` DISABLE KEYS */;
+INSERT INTO `comment` VALUES (3,'T\'as raison Jack !','2020-12-09 19:24:14',68,58),(4,'Ceci est un nouvel essai','2020-12-09 23:07:06',68,58);
 /*!40000 ALTER TABLE `comment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -62,7 +55,7 @@ DROP TABLE IF EXISTS `like_dislike`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `like_dislike` (
   `like_dislike` tinyint NOT NULL DEFAULT '0',
-  `user_id` smallint unsigned NOT NULL,
+  `user_id` smallint unsigned NOT NULL DEFAULT '0',
   `id` smallint unsigned NOT NULL AUTO_INCREMENT,
   `post_id` smallint unsigned NOT NULL,
   PRIMARY KEY (`id`),
@@ -71,7 +64,7 @@ CREATE TABLE `like_dislike` (
   KEY `fk_user_id_like` (`user_id`),
   CONSTRAINT `fk_post_like` FOREIGN KEY (`post_id`) REFERENCES `post` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_user_id_like` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -80,7 +73,7 @@ CREATE TABLE `like_dislike` (
 
 LOCK TABLES `like_dislike` WRITE;
 /*!40000 ALTER TABLE `like_dislike` DISABLE KEYS */;
-INSERT INTO `like_dislike` VALUES (-1,69,19,57);
+INSERT INTO `like_dislike` VALUES (0,69,19,57),(-1,68,62,58);
 /*!40000 ALTER TABLE `like_dislike` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -154,4 +147,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-12-08 18:51:42
+-- Dump completed on 2020-12-09 23:42:31
