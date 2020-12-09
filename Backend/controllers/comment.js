@@ -50,3 +50,15 @@ exports.deleteCommentPost = (req, res, next) => {
         })
         .catch(error => res.status(500).json({ error }))
 };
+
+exports.getOneComment = (req, res, next) => {
+    commentModel.oneComment(req.params.idComment)
+    .then(response => res.status(200).json(response))
+    .catch(error => res.status(500).json({ error }))
+};
+
+exports.getAllComment = (req, res, next) => {
+    commentModel.allComment()
+        .then(response => res.status(200).json(response))
+        .catch(error => res.status(500).json({ error }))
+};

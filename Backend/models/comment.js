@@ -42,3 +42,39 @@ exports.delete = (comment_id, user_id, post_id) => {
         console.log(error);
     };
 };
+
+exports.oneComment = (comment_id) => {
+    try {
+        return new Promise((resolve, reject) => {
+            connectionDB.query("SELECT * FROM Comment WHERE id = ?;", [comment_id], (error, results) => {
+                if (results === undefined) {
+                    reject ("Erreur dans la requête");
+                }
+                else {
+                    resolve (results);
+                }
+            });
+        });
+    }
+    catch (error) {
+        console.log(error);
+    };
+};
+
+exports.allComment = () => {
+    try {
+        return new Promise((resolve, reject) => {
+            connectionDB.query("SELECT * FROM Comment;", (error, results) => {
+                if (results === undefined) {
+                    reject ("Erreur dans la requête");
+                }
+                else {
+                    resolve (results);
+                }
+            });
+        });
+    }
+    catch (error) {
+        console.log(error);
+    };
+};

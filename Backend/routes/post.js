@@ -25,4 +25,8 @@ router.put("/:id/comment/:idComment", auth, commentCtrl.modifyCommentPost);
 
 router.delete("/:id/comment/:idComment", auth, commentCtrl.deleteCommentPost);
 
+router.get("/:id/comment/:idComment", auth, commentCtrl.getOneComment);
+
+router.get("/:id/comment", auth, commentCtrl.getAllComment);
+
 module.exports = router;
