@@ -1,7 +1,6 @@
 const connectionDB = require("../connexion_mysql");
 
 exports.postSchema = (titre, contenu_text, contenu_media, user_id) => {
-
     if ((contenu_text && contenu_media) !== null) {
         connectionDB.query("INSERT INTO Post (titre, contenu_text, contenu_media, user_id) VALUES (?, ?, ?, ?);", [titre, contenu_text, contenu_media, user_id], (error, results) => {
             if (error) throw error;
@@ -20,7 +19,7 @@ exports.postSchema = (titre, contenu_text, contenu_media, user_id) => {
             results;
         });
     } 
-}
+};
 
 exports.modify = (titre, contenu_text, contenu_media, id) => {
     try {
@@ -42,10 +41,10 @@ exports.modify = (titre, contenu_text, contenu_media, id) => {
 
 exports.delete = (id) => {
     try {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             connectionDB.query("DELETE FROM Post WHERE id = ?;", [id], (error, results) => {
                 if (results === undefined) {
-                    resolve (error = "Erreur dans la requête");
+                    reject ("Erreur dans la requête");
                 }
                 else {
                     resolve (results);
@@ -60,10 +59,10 @@ exports.delete = (id) => {
 
 exports.onePost = (id) => {
     try {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             connectionDB.query("SELECT * FROM Post WHERE id = ?;", [id], (error, results) => {
                 if (results === undefined) {
-                    resolve (error = "Erreur dans la requête");
+                    reject ("Erreur dans la requête");
                 }
                 else {
                     resolve (results);
@@ -78,10 +77,10 @@ exports.onePost = (id) => {
 
 exports.allPost = () => {
     try {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             connectionDB.query("SELECT * FROM Post;", (error, results) => {
                 if (results === undefined) {
-                    resolve (error = "Erreur dans la requête");
+                    reject ("Erreur dans la requête");
                 }
                 else {
                     resolve (results);

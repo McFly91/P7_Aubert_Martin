@@ -63,7 +63,7 @@ exports.modifyPost = (req, res, next) => {
                     res.status(404).json({ message : "Vous ne pouvez pas modifier un Post qui ne vous appartient pas" })
                 }
             })
-        .catch(error => res.status(500).json(error))
+        .catch(error => res.status(500).json({ error }))
 };
 
 exports.deletePost = (req, res, next) => {
@@ -84,7 +84,7 @@ exports.deletePost = (req, res, next) => {
                     res.status(404).json({ message : "Vous ne pouvez pas supprimer un Post qui ne vous appartient pas" })
                 }
         })
-        .catch(error => res.status(500).json(error))
+        .catch(error => res.status(500).json({ error }))
 };
 
 exports.getOnePost = (req, res, next) => {

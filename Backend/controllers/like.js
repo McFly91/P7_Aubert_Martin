@@ -1,32 +1,28 @@
 const postModel = require("../models/post");
 const likeModel = require("../models/like");
 const fs = require("fs");
+const { SSL_OP_DONT_INSERT_EMPTY_FRAGMENTS } = require("constants");
 
 exports.likePost = (req, res, next) => {
+    const userId = res.locals.userId;
     postModel.onePost(req.params.id)
         .then(response => {
             if (req.body.like === undefined) {
                 return res.status(400).json({ message : "Le corps de la requête n'est pas conforme" })
             }
             else {
-                likeModel.like(response[0].id, res.locals.userId)
+                likeModel.like(userId, response[0].id)
                     .then(likes => {
                         if (req.body.like === 1) {
-                            if (likes[0].like_dislike === 1) {
-                                res.status(400).json({ message : "Post déjà Liké" })
+                            if (likes[0].like_dislike === 0 ||  likes[0].like_dislike === 1) {
+                                likeModel.modifyLike(1, response[0].id)
+                                    .then(() => res.status(200).json({ message : "Like ajouté"}))
+                                    .catch(error => res.status(500).json({ error }))
                             }
                             else if (likes[0].like_dislike === -1) {
                                 likeModel.modifyLike(1, response[0].id)
                                     .then(() => res.status(200).json({ message : "Dislike retiré / Like ajouté"}))
                                     .catch(error => res.status(500).json({ error }))
-                            }
-                            else {
-                                likeModel.newLike(
-                                    req.body.like, 
-                                    res.locals.userId, 
-                                    response[0].id
-                                );
-                                res.status(200).json({ message : "Like ajouté"});
                             }
                         }
                         else if (req.body.like === -1) {
@@ -38,17 +34,9 @@ exports.likePost = (req, res, next) => {
                                     .then(() => res.status(200).json({ message : "Dislike retiré / Like ajouté"}))
                                     .catch(error => res.status(500).json({ error }))
                             }
-                            else {
-                                likeModel.newLike(
-                                    req.body.like, 
-                                    res.locals.userId, 
-                                    response[0].id
-                                );
-                                res.status(200).json({ message : "Dislike ajouté"});
-                            }
                         }
                         else if (req.body.like === 0) {
-                            likeModel.modifyUserLike(null, response[0].id)
+                            likeModel.modifyLike(0, response[0].id)
                                 .then(() => res.status(200).json({ message : "Like/Dislike retiré"}))
                                 .catch(error => res.status(500).json({ error }))
                         }
