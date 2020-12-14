@@ -3,13 +3,12 @@
 
 <head>
   <meta charset="utf-8">
-  <meta name="description" content="Création d'un utilisateur pour Groupomania"/>
+  <meta name="description" content="Connexion d'un utilisateur pour Groupomania"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="node_modules/font-awesome/css/font-awesome.min.css">
 
-  <title>Groupomania - Création d'un utilisateur</title>
+  <title>Groupomania - Connexion d'un utilisateur</title>
 </head>
 
 <body>
@@ -27,7 +26,7 @@
     <section class="container">
       <div class="row">
          <div class="col">
-            <form>
+            <form id="form" name="form">
                <div class="form-group">
                   <label for="nom">Nom</label>
                   <input type="text" class="form-control" id="nom" placeholder="Nom">
@@ -48,11 +47,14 @@
                </div>
                <div class="form-group">
                   <label for="password_confirm">Mot de passe</label>
-                  <input type="password" class="form-control" id="password_confirm" placeholder="Mot de passe">
+                  <input type="password" class="form-control" id="password_confirm" placeholder="Confirmer votre mot de passe">
                   <small id="passwordHelp_confirm" class="form-text text-muted">Veuillez confirmer votre mot de passe.</small>
-                </div>
-               <a href="index.html" type="submit" class="btn btn-primary">Valider</a>
-             </form>
+               </div>
+               <div class="col d-flex justify-content-around">
+                  <input type="submit" class="btn btn-primary" id="form_submit" value="Valider">
+                  <a href="index.html" class="btn btn-info">Retour Accueil</a>
+               </div>
+            </form>
          </div>
       </div>
     </section>
@@ -60,20 +62,21 @@
     <footer class="container">
           <ul class="list-inline d-flex justify-content-center py-2 my-0">
              <li class="list-inline-item">
-                <a href="#">Help</a>
+                <a href="help.html" class="text-info">Help</a>
              </li>
              <li class="list-inline-item">
                 -
              </li>
              <li class="list-inline-item">
-                <a href="#">Support</a>
+                <a href="support.html" class="text-info">Support</a>
              </li>
           </ul>
     </footer>
 
    <script src="node_modules/jquery/dist/jquery.min.js"></script>
-   <script src="node_modules/@popperjs/core/dist/umd/popper-base.min.js"></script>
+   <script src="node_modules/popper.js/dist/umd/popper.min.js"></script>
    <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+   <script src="./js/creation_utilisateur.js"></script>
 
 </body>
 

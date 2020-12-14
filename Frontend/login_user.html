@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="Création d'un utilisateur pour Groupomania"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="node_modules/font-awesome/css/font-awesome.min.css">
+
+  <title>Groupomania - Connexion d'un utilisateur</title>
+</head>
+
+<body>
+
+    <header>
+       <div class="container">
+          <div class="row justify-content-center">
+              <h1>
+                 <img src="./images/logo_titre.png" class="img-fluid" alt="Logo de la société">
+              </h1>
+          </div>
+       </div>
+    </header>
+
+    <section class="container">
+      <div class="row">
+         <div class="col">
+            <form id="form" name="form">
+               <div class="form-group">
+                 <label for="email">Adresse Email</label>
+                 <input type="email" class="form-control" id="email" placeholder="Adresse Email">
+                 <small id="emailHelp" class="form-text text-muted">Veuillez rentrer une adresse email valide.</small>
+               </div>
+               <div class="form-group">
+                 <label for="password">Mot de passe</label>
+                 <input type="password" class="form-control" id="password" placeholder="Mot de passe">
+                 <small id="passwordHelp" class="form-text text-muted">Veuillez entrer votre mot de passe.</small>
+               </div>
+               <div class="col d-flex justify-content-around">
+                  <input type="submit" class="btn btn-primary" id="form_submit" value="Valider">
+                  <a href="index.html" class="btn btn-info">Retour Accueil</a>
+               </div>
+            </form>
+         </div>
+      </div>
+    </section>
+
+    <footer class="container">
+          <ul class="list-inline d-flex justify-content-center py-2 my-0">
+             <li class="list-inline-item">
+                <a href="help.html" class="text-info">Help</a>
+             </li>
+             <li class="list-inline-item">
+                -
+             </li>
+             <li class="list-inline-item">
+                <a href="support.html" class="text-info">Support</a>
+             </li>
+          </ul>
+    </footer>
+
+   <script src="node_modules/jquery/dist/jquery.min.js"></script>
+   <script src="node_modules/popper.js/dist/umd/popper.min.js"></script>
+   <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+   <script src="./js/login_user.js"></script>
+
+</body>
+
+</html>
