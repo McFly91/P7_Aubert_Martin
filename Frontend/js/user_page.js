@@ -1,4 +1,4 @@
-const newPost = (titreValue, contenu_textValue, contenu_mediaValue) => {
+const newPost = (titre, contenu_text, contenu_media) => {
     try {
         return new Promise ((resolve,reject) => {
             let request = new XMLHttpRequest();
@@ -11,8 +11,9 @@ const newPost = (titreValue, contenu_textValue, contenu_mediaValue) => {
                     request.onerror = () => reject(this.statusText);
                 }
             };
+            request.setRequestHeader("Authorization", `Bearer ${JSON.parse(sessionStorage.getItem("token"))}`);
             request.setRequestHeader("Content-Type", "application/json");
-            request.send(JSON.stringify({titre : titreValue, contenu_text : contenu_textValue, contenu_media : contenu_mediaValue}));
+            request.send(JSON.stringify({titre, contenu_text, contenu_media}));
         });
     }
     catch (error) {
@@ -34,6 +35,7 @@ const allPost = () => {
                     request.onerror = () => reject(this.statusText);
                 }
             };
+            request.setRequestHeader("Authorization", `Bearer ${sessionStorage.getItem("token")}`);
             request.send();
         });
     }
@@ -47,7 +49,7 @@ const dateCalcul = (date_creation) => {
     let dateCreation = Date.parse(date_creation);
     let dateDiff = dateNow - dateCreation;
     let date;
-    if (dateDiff < (60000*60*24)) {
+    if (dateDiff > (60000*60) && dateDiff < (60000*60*24)) {
         return date = "Il y a " + Math.round(dateDiff / (60000*60)) + " Heures";
     }
     else if (dateDiff < (60000*60)) {
@@ -80,16 +82,13 @@ const allComment = () => {
     };
 };
 
-let userId = sessionStorage.getItem("userId");
-let token = sessionStorage.getItem("token");
-
+// Ajout d'un nouveau Post
 form.addEventListener("submit", (event) => {
     event.preventDefault();
-    let titreValue = document.getElementById("titre").value;
-    let contenu_textValue = document.getElementById("contenu_text").value;
-    let contenu_mediaValue = null;
-    console.log(titreValue);
-    newPost(titreValue, contenu_textValue, contenu_mediaValue)
+    let titre = document.getElementById("titre").value;
+    let contenu_text = document.getElementById("contenu_text").value;
+    let contenu_media = null;
+    newPost(titre, contenu_text, contenu_media)
         .then(() => console.log("Post créé"))
         .catch((error) => {
             console.log(error, "Problème de communication avec l'API");
@@ -136,4 +135,4 @@ allPost()
     })
     .catch((error) => {
         console.log(error, "Problème de communication avec l'API");
-    }); 
+    });
