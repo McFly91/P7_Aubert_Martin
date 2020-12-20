@@ -49,10 +49,10 @@ exports.signup = (req, res, next) => {
                     }
                 }
                 else {
-                    return res.status(400).json({ message : "Veuillez réessayer avec une autre adresse email"})
+                    return res.status(400).json({ error : "Veuillez réessayer avec une autre adresse email"})
                 };
         })
-        .catch(() => {res.status(404).json({ message : "erreur" })})
+        .catch(() => {res.status(404).json({ error : "erreur" })})
 };
 
 exports.login = (req, res, next) => {

@@ -1,9 +1,9 @@
 const form = document.getElementById("form");
 const inputs = document.getElementsByClassName("form-control");
 const submit = document.getElementById("form_submit");
-const errorInformation = document.getElementsByClassName("text-muted");
+const errorInfo = document.getElementsByClassName("text-muted");
 
-const requestServer = async (url, data) => {
+const loginUser = async (url, data) => {
     try {
         let response = await fetch(url, {
             method:"POST",
@@ -13,16 +13,15 @@ const requestServer = async (url, data) => {
             },
             body: JSON.stringify(data)
         })
-        console.log(response)
-        let dataJson = await response.json();
+        let responseJson = await response.json();
+        console.log(responseJson)
         if (response.status === 200) {
-            return dataJson
+            return responseJson
         }
         else {
-            console.log(dataJson.error);
             for (let i = 0; i < inputs.length; i++) {
                 inputs[i].style.border = "2px solid #dc3545";
-                errorInformation[i].textContent = dataJson.error;
+                errorInfo[i].textContent = responseJson.error;
             }
         }
     }
@@ -38,7 +37,7 @@ form.addEventListener("submit", (event) => {
         email: document.getElementById("email").value,
         password: document.getElementById("password").value
     };
-    requestServer("http://localhost:3000/api/auth/login", idLogin)
+    loginUser("http://localhost:3000/api/auth/login", idLogin)
         .then(response => {
                 sessionStorage.setItem("token", response.token);
                 window.location.href = "user_page.html";
