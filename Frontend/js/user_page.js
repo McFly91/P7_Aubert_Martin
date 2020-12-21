@@ -106,30 +106,27 @@ allPost()
             let li = document.createElement("li");
             li.classList.add("list-group-item", "bg-light");
             document.querySelector(".all_posts").prepend(li);
+            let userHtml = "<h6>" + post.prenom + " " + post.nom + "</h6>";
+            let datePostHtml = "<p class='font-italic'>" + dateCalcul(post.date_post) + "</p>";
+            let titreHtml = "<h5 class='card-title font-weight-bold'>" + post.titre + "</h5>";
+            let contenu_textHtml = "<p class='card-text'>" + post.contenu_text + "</p>";
+            let commentairesHtml = "<p>Commentaires   Nb : </p>";
+            let likeDislikeHtml = "<p class='m-1'><a class='fas fa-thumbs-up fa-2x pr-2'></a><a class='fas fa-thumbs-down fa-2x align-middle' style='text-decoration:none'></a></p>";
+            let cardHeader = "<div class='card-header d-flex justify-content-between'>" + userHtml + datePostHtml + "</div>";
+            let cardBody = "<div class='card-body px-0 py-0'>" + titreHtml + "</div>";
+            let cardBodyText = "<div class='card-body px-0 py-0'>" + titreHtml + contenu_textHtml + "</div>";
+            let cardImg = "<p class='text-center'><img class='card-img-bottom py-2 w-25' src=" + post.contenu_media + " alt='media post'></p>";
+            let cardFooter = "<div class='card-footer text-muted d-flex justify-content-between py-0'>" + commentairesHtml + likeDislikeHtml + "</div>";
+            let cardLink = "<a class=stretched-link' href='user_page.html?id=" + post.id + "'>"
+            
             if (post.contenu_text !== null && post.contenu_media !== null) {
-                li.innerHTML = "<div class='card'><div class='card-header d-flex justify-content-between'><h6>" + post.user_id + 
-                "</h6><p class='font-italic'>" + dateCalcul(post.date_post) +
-                "</p></div><div class='card-body px-0 py-0'><h5 class='card-title font-weight-bold'>" + post.titre + 
-                "</h5><p class='card-text'>" + post.contenu_text + 
-                "</p></div><p class='text-center'><img class='card-img-bottom py-2 w-25' src=" + post.contenu_media + 
-                " alt='media post'></p><div class='card-footer text-muted d-flex justify-content-between py-0'><p>Commentaires   Nb : </p><p><i class='fa-thumbs-up fa-2x'></i><i class='fa-thumbs-down fa-2x'></i></p></div><a class=stretched-link' href='user_page.html?id=" + post.id +
-                "'></div>";
+                li.innerHTML = "<div class='card'>" + cardHeader + cardBodyText + cardImg + cardFooter + cardLink + "</div>";
             }
             else if (post.contenu_media !== null) {
-                li.innerHTML = "<div class='card'><div class='card-header d-flex justify-content-between'><h6>" + post.user_id + 
-                "</h6><p class='font-italic'>" + dateCalcul(post.date_post) +
-                "</p></div><div class='card-body px-0 py-0'><h5 class='card-title font-weight-bold'>" + post.titre + 
-                "</h5><p class='text-center'><img class='card-img-bottom py-2 w-25' src=" + post.contenu_media + 
-                " alt='media post'></p><div class='card-footer text-muted d-flex justify-content-between py-0'><p>Commentaires   Nb : </p><p><i class='fa-thumbs-up fa-2x'></i><i class='fa-thumbs- fa-2x'></i></p></div><a class=stretched-link' href='user_page.html?id=" + post.id +
-                "'></div>";
+                li.innerHTML = "<div class='card'>" + cardHeader + cardBody + cardImg + cardFooter + "</div>";
             }
             else {
-                li.innerHTML = "<div class='card'><div class='card-header d-flex justify-content-between'><h6>" + post.user_id + 
-                "</h6><p class='font-italic'>" + dateCalcul(post.date_post) +
-                "</p></div><div class='card-body px-0 py-0'><h5 class='card-title font-weight-bold'>" + post.titre + 
-                "</h5><p class='card-text'>" + post.contenu_text + 
-                "</p><div class='card-footer text-muted d-flex justify-content-between py-0'><p>Commentaires   Nb : </p><p><i class='fa-thumbs-up fa-2x'></i><i class='fa-thumbs- fa-2x'></i></p></div><a class=stretched-link' href='user_page.html?id=" + post.id +
-                "'></div>";
+                li.innerHTML = "<div class='card'>" + cardHeader + cardBodyText + cardFooter + cardLink + "</div>";
             }
         });
     })

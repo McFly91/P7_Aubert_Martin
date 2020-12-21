@@ -65,6 +65,7 @@ exports.onePost = (id) => {
                     reject ("Erreur dans la requête");
                 }
                 else {
+
                     resolve (results);
                 }
             });
@@ -78,7 +79,7 @@ exports.onePost = (id) => {
 exports.allPost = () => {
     try {
         return new Promise((resolve, reject) => {
-            connectionDB.query("SELECT * FROM Post;", (error, results) => {
+            connectionDB.query("SELECT Post.id, Post.titre, Post.contenu_text, Post.contenu_media, Post.date_post, Post.user_id, User.prenom, User.nom FROM Post INNER JOIN User ON Post.user_id = User.id;", (error, results) => {
                 if (results === undefined) {
                     reject ("Erreur dans la requête");
                 }
