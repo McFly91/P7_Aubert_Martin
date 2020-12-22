@@ -1,43 +1,66 @@
-const newPost = (titre, contenu_text, contenu_media) => {
+const newPostWithoutMedia = async (url, data) => {
     try {
-        return new Promise ((resolve,reject) => {
-            let request = new XMLHttpRequest();
-            request.open("POST", "http://localhost:3000/api/post/");
-            request.onreadystatechange = function() {
-                if (this.readyState == XMLHttpRequest.DONE && this.status === 201) {
-                    request.onload = () => resolve(this.statusText);
-                }
-                else {
-                    request.onerror = () => reject(this.statusText);
-                }
-            };
-            request.setRequestHeader("Authorization", `Bearer ${JSON.parse(sessionStorage.getItem("token"))}`);
-            request.setRequestHeader("Content-Type", "application/json");
-            request.send(JSON.stringify({titre, contenu_text, contenu_media}));
-        });
+        let response = await fetch(url, {
+            method:"POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${sessionStorage.getItem("token")}`
+            },
+            body: JSON.stringify(data)
+        })
+        let responseJson = await response.json();
+
+        if (response.status === 201) {
+            return response
+        }
+        else {
+            return responseJson
+        }
     }
     catch (error) {
         console.log(error);
     };
 };
 
-const allPost = () => {
+const newPostWithMedia = async (url, data) => {
     try {
-        return new Promise ((resolve,reject) => {
-            let request = new XMLHttpRequest();
-            request.open("GET", "http://localhost:3000/api/post/");
-            request.onreadystatechange = function() {
-                if (this.readyState == XMLHttpRequest.DONE && this.status === 200) {
-                    resolve (JSON.parse(this.responseText));
-                    request.onload = () => this.statusText;
-                }
-                else {
-                    request.onerror = () => reject(this.statusText);
-                }
-            };
-            request.setRequestHeader("Authorization", `Bearer ${sessionStorage.getItem("token")}`);
-            request.send();
-        });
+        let response = await fetch(url, {
+            method:"POST",
+            headers: {
+                "Authorization": `Bearer ${sessionStorage.getItem("token")}`
+            },
+            body: data
+        })
+        let responseJson = await response.json();
+
+        if (response.status === 201) {
+            return response
+        }
+        else {
+            return responseJson
+        }
+    }
+    catch (error) {
+        console.log(error);
+    };
+};
+
+const allPost = async (url) => {
+    try {
+        let response = await fetch(url, {
+            method:"GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${sessionStorage.getItem("token")}`
+            },
+        })
+        let responseJson = await response.json();
+        if (response.status === 200) {
+            return responseJson
+        }
+        else {
+            throw error
+        }
     }
     catch (error) {
         console.log(error);
@@ -60,9 +83,9 @@ const dateCalcul = (date_creation) => {
     };
 };
 
-const allComment = () => {
+const allComment = async (url) => {
     try {
-        return new Promise ((resolve,reject) => {
+        /*return new Promise ((resolve,reject) => {
             let request = new XMLHttpRequest();
             request.open("GET", "http://localhost:3000/api/post/:id/comment");
             request.onreadystatechange = function() {
@@ -75,7 +98,22 @@ const allComment = () => {
                 }
             };
             request.send();
-        });
+        });*/
+        let response = await fetch(url, {
+            method:"GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${sessionStorage.getItem("token")}`
+            },
+        })
+        let responseJson = await response.json();
+        console.log(response, responseJson)
+        if (response.status === 200) {
+            return responseJson
+        }
+        else {
+            throw error
+        }
     }
     catch (error) {
         console.log(error);
@@ -85,19 +123,51 @@ const allComment = () => {
 // Ajout d'un nouveau Post
 form.addEventListener("submit", (event) => {
     event.preventDefault();
-    let titre = document.getElementById("titre").value;
-    let contenu_text = document.getElementById("contenu_text").value;
-    let contenu_media = null;
-    newPost(titre, contenu_text, contenu_media)
-        .then(() => console.log("Post créé"))
+    const image = document.getElementById("contenu_media").files;
+    const post = {
+        titre: document.getElementById("titre").value,
+        contenu_text: document.getElementById("contenu_text").value
+    };
+    if (image[0] !== undefined) {
+        const data = new FormData();
+        data.append("image", image[0]);
+        data.append("post", JSON.stringify(post));
+        newPostWithMedia("http://localhost:3000/api/post/", data)
+        .then(response => {
+            if (response.status === 201) {
+                document.location.reload();
+                console.log("Post créé");
+            }
+            else {
+                let errorInfo = document.getElementById("contenuHelp");
+                errorInfo.textContent = response.error;
+            } 
+        })
+        .catch((error) => {
+            console.log(error, "Problème de communication avec l'API");
+        });
+    }
+    else {
+    newPostWithoutMedia("http://localhost:3000/api/post/", post)
+        .then(response => {
+            if (response.status === 201) {
+                document.location.reload();
+                console.log("Post créé");
+            }
+            else {
+                let errorInfo = document.getElementById("contenuHelp");
+                errorInfo.textContent = response.error;
+            } 
+        })
         .catch((error) => {
             console.log(error, "Problème de communication avec l'API");
         }); 
+    }
 });
 
 // Affichage de l'ensemble des Posts
-allPost()
-    .then( response => {
+allPost("http://localhost:3000/api/post/")
+    .then(response => {
         let ul = document.createElement("ul");
         ul.classList.add("container","px-0", "col-lg-6", "list-group", "all_posts");
         document.getElementById("all_posts").append(ul);

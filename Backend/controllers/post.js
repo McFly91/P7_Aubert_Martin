@@ -12,7 +12,8 @@ exports.createPost = (req, res, next) => {
         postObject = JSON.parse(req.body.post);
             postObject.contenu_media = `${req.protocol}://${req.get("host")}/images/${filename}`;
     }
-    if (inputRegex.test(postObject.titre) && (postObject.contenu_text === null || (postObject.contenu_text !== null && inputRegex.test(postObject.contenu_text)))) {
+    console.log(postObject);
+    if (inputRegex.test(postObject.titre) && (postObject.contenu_text === "" || (postObject.contenu_text !== "" && inputRegex.test(postObject.contenu_text)))) {
         postModel.postSchema(
             postObject.titre, 
             postObject.contenu_text, 
