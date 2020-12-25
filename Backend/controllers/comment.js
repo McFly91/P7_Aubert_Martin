@@ -58,7 +58,7 @@ exports.getOneComment = (req, res, next) => {
 };
 
 exports.getAllComment = (req, res, next) => {
-    commentModel.allComment()
+    commentModel.allComment(req.params.id)
         .then(response => res.status(200).json(response))
         .catch(error => res.status(500).json({ error }))
 };
