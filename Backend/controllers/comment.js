@@ -12,7 +12,6 @@ exports.newCommentPost = (req, res, next) => {
                     req.body.comment_post,
                     res.locals.userId,
                     response[0].id);
-                console.log(req.params, req.params.idpost);
                 res.status(201).json({ message : "Commentaire enregistré" });
             }
             else {

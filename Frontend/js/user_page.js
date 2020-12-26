@@ -1,3 +1,5 @@
+const form = document.getElementById("form");
+
 const newPostWithoutMedia = async (url, data) => {
     try {
         let response = await fetch(url, {
