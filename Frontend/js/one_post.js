@@ -130,6 +130,8 @@ onePost(url)
             let textInfo = "<small id='commentHelp' class='form-text text-muted'></small>"
             let submit = "<input type='submit' class='btn btn-primary mx-1' id='form_submit' value='Publier'>";
             li.innerHTML = "<form id='form' name='form' class='list-group-item bg-light py-1 px-0'><div class='form-group d-flex'>" + commentFormHtml + textInfo + submit + "</div></form>";
+            
+            // Creation d'un nouveau commentaire
             let form = document.getElementById("form");
             form.addEventListener("submit", (event) => {
             event.preventDefault();
@@ -147,10 +149,10 @@ onePost(url)
                         errorInfo.textContent = response.error;
                     }
                 })
+                .catch((error) => {
+                    console.log(error, "Problème de communication avec l'API");
+                })
             })
-        })
-        .catch((error) => {
-            console.log(error, "Problème de communication avec l'API");
         })
 
         if (post[0].contenu_text !== null && post[0].contenu_media !== null) {

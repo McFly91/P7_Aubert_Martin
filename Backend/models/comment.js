@@ -64,7 +64,7 @@ exports.oneComment = (comment_id) => {
 exports.allComment = (post_id) => {
     try {
         return new Promise((resolve, reject) => {
-            connectionDB.query("SELECT Comment.id, Comment.comment_post, Comment.date_comment, Comment.user_id, User.prenom, User.nom FROM Comment INNER JOIN User ON Comment.user_id = User.id WHERE post_id = ?;", [post_id], (error, results) => {
+            connectionDB.query("SELECT Comment.id, Comment.comment_post, Comment.date_comment, Comment.post_id, Comment.user_id, User.prenom, User.nom FROM Comment INNER JOIN User ON Comment.user_id = User.id WHERE post_id = ?;", [post_id], (error, results) => {
                 if (results === undefined) {
                     reject ("Erreur dans la requête");
                 }

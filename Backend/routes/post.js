@@ -19,6 +19,8 @@ router.get("/", auth, postCtrl.getAllPosts);
 
 router.post("/:id/like", auth, likeCtrl.likePost);
 
+router.get("/:id/like", auth, likeCtrl.allLikePost);
+
 router.post("/:id/comment", auth, commentCtrl.newCommentPost);
 
 router.put("/:id/comment/:idComment", auth, commentCtrl.modifyCommentPost);

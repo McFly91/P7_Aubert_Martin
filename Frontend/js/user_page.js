@@ -108,6 +108,53 @@ const allComment = async (url) => {
     };
 };
 
+const likeDislike = async (url, data) => {
+    try {
+        let response = await fetch(url, {
+            method:"POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${sessionStorage.getItem("token")}`
+            },
+            body: JSON.stringify(data)
+        })
+        let responseJson = await response.json();
+        console.log(response, responseJson)
+        if (response.status === 200) {
+            return responseJson
+        }
+        else {
+            return responseJson.error
+        }
+    }
+    catch (error) {
+        console.log(error);
+    };
+};
+
+const allLikeDislike = async (url) => {
+    try {
+        let response = await fetch(url, {
+            method:"GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${sessionStorage.getItem("token")}`
+            },
+        })
+        let responseJson = await response.json();
+        console.log(response, responseJson)
+        if (response.status === 200) {
+            return responseJson
+        }
+        else {
+            throw error
+        }
+    }
+    catch (error) {
+        console.log(error);
+    };
+};
+
 // Ajout d'un nouveau Post
 form.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -169,42 +216,90 @@ allPost("http://localhost:3000/api/post/")
             let datePostHtml = "<p class='font-italic'>" + dateCalcul(post.date_post) + "</p>";
             let titreHtml = "<h5 class='card-title font-weight-bold'>" + post.titre + "</h5>";
             let contenu_textHtml = "<p class='card-text'>" + post.contenu_text + "</p>";
+            let cardLink = "<a class=stretched-link' href='one_post.html?id=" + post.id + "' style='text-decoration:none'>";
             let idCommentaireHtml = post.id;
-            let commentairesHtml = "<p class='btn btn-primary'>Commentaires <span class='badge bg-secondary' id='" + idCommentaireHtml + "'></p>";
+            let commentairesHtml = cardLink + "<p class='btn btn-primary'>Commentaires <span class='badge bg-secondary' id='" + idCommentaireHtml + "'></p></a>";
+            let likeHtml = "<p><a class='fas fa-thumbs-up fa-2x pr-2' id='like'></a><span id='nb_like" + post.id + "' class='pr-1'></span></p>";
+            let dislikeHtml = "<p class='pt-2'><a class='fas fa-thumbs-down fa-2x align-middle' style='text-decoration:none' id='dislike'></a> <span id='nb_dislike" + post.id + "' class='pr-1'></span></p>";
+            let likeDislikeHtml = "<div class='d-flex m-1'>" + likeHtml + dislikeHtml + "</div>";
+            let cardHeader = "<div class='card-header d-flex justify-content-between'>" + userHtml + datePostHtml + "</div>";
+            let cardBody = "<div class='card-body px-0 py-0'>" + titreHtml + "</div>";
+            let cardBodyText = "<div class='card-body px-0 py-0'>" + titreHtml + contenu_textHtml + "</div>";
+            let cardImg = "<p class='text-center'><img class='card-img-bottom py-2 w-25' src=" + post.contenu_media + " alt='media post'></p>";
+            let cardFooter = "<div class='card-footer text-muted d-flex justify-content-between py-0'>" + commentairesHtml + likeDislikeHtml + "</div>";
+
             // Affichage de l'ensemble des commentaires pour chaque Post
             allComment("http://localhost:3000/api/post/" + post.id + "/comment")
                 .then(responseComment => {
                     responseComment.forEach(comment => {
+                        console.log(comment, post.id)
                         if (comment.post_id === post.id) {
                             document.getElementById(post.id).textContent = responseComment.length;
-                            
                         }
                     })
                 })
                 .catch((error) => {
                     console.log(error, "Problème de communication avec l'API");
                 })
-            let likeDislikeHtml = "<p class='m-1'><a class='fas fa-thumbs-up fa-2x pr-2'></a><a class='fas fa-thumbs-down fa-2x align-middle' style='text-decoration:none'></a></p>";
-            let cardLink = "<a class=stretched-link' href='one_post.html?id=" + post.id + "'>"
-            let cardHeader = "<div class='card-header d-flex justify-content-between'>" + userHtml + datePostHtml + "</div>";
-            let cardBody = "<div class='card-body px-0 py-0'>" + titreHtml + "</div>";
-            let cardBodyText = "<div class='card-body px-0 py-0'>" + titreHtml + contenu_textHtml + "</div>";
-            let cardImg = "<p class='text-center'><img class='card-img-bottom py-2 w-25' src=" + post.contenu_media + " alt='media post'></p>";
-            let cardFooter = "<div class='card-footer text-muted d-flex justify-content-between py-0'>" + commentairesHtml + likeDislikeHtml + "</div>";
             
+            
+            // Affichage de l'ensemble des likes/dislikes
+            allLikeDislike("http://localhost:3000/api/post/" + post.id + "/like")
+                .then(responseLikeDislike => {
+                    let nbLike = document.getElementById("nb_like" + post.id);
+                    nbLike.textContent = responseLikeDislike[0].likes;
+                    let nbDislike = document.getElementById("nb_dislike" + post.id);
+                    nbDislike.innerHTML = responseLikeDislike[0].dislikes;
+                })
+                .catch((error) => {
+                    console.log(error, "Problème de communication avec l'API");
+                });
+
             if (post.contenu_text !== null && post.contenu_media !== null) {
-                li.innerHTML = "<div class='card'>" + cardHeader + cardBodyText + cardImg + cardFooter + cardLink + "</div>";
+                li.innerHTML = "<div class='card'>" + cardHeader + cardBodyText + cardImg + cardFooter + "</div>";
             }
             else if (post.contenu_media !== null) {
-                li.innerHTML = "<div class='card'>" + cardLink + cardHeader + cardBody + cardImg + cardFooter + "</div>";
+                li.innerHTML = "<div class='card'>" + cardHeader + cardBody + cardImg + cardFooter + "</div>";
             }
             else {
-                li.innerHTML = "<div class='card'>" + cardHeader + cardBodyText + cardFooter + cardLink + "</div>";
+                li.innerHTML = "<div class='card'>"+ cardHeader + cardBodyText + cardFooter + "</div>";
             }
+
+            // Ajout d'un like
+            const like = document.getElementById("like");
+            like.addEventListener("click", () => {
+                const likeValue = {
+                    like: 1
+                }
+                likeDislike("http://localhost:3000/api/post/" + post.id + "/like", likeValue)
+                    .then(responseLike => {
+                        let nbLike = document.getElementById("nb_like" + post.id);
+                        nbLike.textContent = responseLike[0].likes;
+                        let nbDislike = document.getElementById("nb_dislike" + post.id);
+                        nbDislike.innerHTML = responseLike[0].dislikes;
+                    })
+                    .catch((error) => {
+                        console.log(error, "Problème de communication avec l'API");
+                    });
+            });
+            const dislike = document.getElementById("dislike");
+            dislike.addEventListener("click", () => {
+                const likeValue = {
+                    like: -1
+                }
+                likeDislike("http://localhost:3000/api/post/" + post.id + "/like", likeValue)
+                    .then(responseDislike => {
+                        let nbLike = document.getElementById("nb_like" + post.id);
+                        nbLike.textContent = responseDislike[0].likes;
+                        let nbDislike = document.getElementById("nb_dislike" + post.id);
+                        nbDislike.innerHTML = responseDislike[0].dislikes;
+                    })
+                    .catch((error) => {
+                        console.log(error, "Problème de communication avec l'API");
+                    });
+            });
         });
     })
     .catch((error) => {
         console.log(error, "Problème de communication avec l'API");
     });
-
-
