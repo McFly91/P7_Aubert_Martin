@@ -20,7 +20,7 @@ const newPostWithoutMedia = async (url, data) => {
         }
     }
     catch (error) {
-        console.log(error);
+        console.error(error);
     };
 };
 
@@ -43,7 +43,7 @@ const newPostWithMedia = async (url, data) => {
         }
     }
     catch (error) {
-        console.log(error);
+        console.error(error);
     };
 };
 
@@ -65,7 +65,7 @@ const allPost = async (url) => {
         }
     }
     catch (error) {
-        console.log(error);
+        console.error(error);
     };
 };
 
@@ -104,11 +104,11 @@ const allComment = async (url) => {
         }
     }
     catch (error) {
-        console.log(error);
+        console.error(error);
     };
 };
 
-const likeDislike = async (url, data) => {
+const addLikeDislike = async (url, data) => {
     try {
         let response = await fetch(url, {
             method:"POST",
@@ -128,7 +128,7 @@ const likeDislike = async (url, data) => {
         }
     }
     catch (error) {
-        console.log(error);
+        console.error(error);
     };
 };
 
@@ -151,7 +151,7 @@ const allLikeDislike = async (url) => {
         }
     }
     catch (error) {
-        console.log(error);
+        console.error(error);
     };
 };
 
@@ -217,10 +217,9 @@ allPost("http://localhost:3000/api/post/")
             let titreHtml = "<h5 class='card-title font-weight-bold'>" + post.titre + "</h5>";
             let contenu_textHtml = "<p class='card-text'>" + post.contenu_text + "</p>";
             let cardLink = "<a class=stretched-link' href='one_post.html?id=" + post.id + "' style='text-decoration:none'>";
-            let idCommentaireHtml = post.id;
-            let commentairesHtml = cardLink + "<p class='btn btn-primary'>Commentaires <span class='badge bg-secondary' id='" + idCommentaireHtml + "'></p></a>";
-            let likeHtml = "<p><a class='fas fa-thumbs-up fa-2x pr-2' id='like'></a><span id='nb_like" + post.id + "' class='pr-1'></span></p>";
-            let dislikeHtml = "<p class='pt-2'><a class='fas fa-thumbs-down fa-2x align-middle' style='text-decoration:none' id='dislike'></a> <span id='nb_dislike" + post.id + "' class='pr-1'></span></p>";
+            let commentairesHtml = cardLink + "<p class='btn btn-primary'>Commentaires <span class='badge bg-secondary' id='" + post.id + "'></p></a>";
+            let likeHtml = "<p><a class='fas fa-thumbs-up fa-2x pr-2' id='like" + post.id + "'></a><span id='nb_like" + post.id + "' class='pr-1'></span></p>";
+            let dislikeHtml = "<p class='pt-2'><a class='fas fa-thumbs-down fa-2x align-middle' style='text-decoration:none' id='dislike" + post.id + "'></a> <span id='nb_dislike" + post.id + "' class='pr-1'></span></p>";
             let likeDislikeHtml = "<div class='d-flex m-1'>" + likeHtml + dislikeHtml + "</div>";
             let cardHeader = "<div class='card-header d-flex justify-content-between'>" + userHtml + datePostHtml + "</div>";
             let cardBody = "<div class='card-body px-0 py-0'>" + titreHtml + "</div>";
@@ -239,7 +238,7 @@ allPost("http://localhost:3000/api/post/")
                     })
                 })
                 .catch((error) => {
-                    console.log(error, "Problème de communication avec l'API");
+                    console.error(error, "Problème de communication avec l'API");
                 })
             
             
@@ -252,7 +251,7 @@ allPost("http://localhost:3000/api/post/")
                     nbDislike.innerHTML = responseLikeDislike[0].dislikes;
                 })
                 .catch((error) => {
-                    console.log(error, "Problème de communication avec l'API");
+                    console.error(error, "Problème de communication avec l'API");
                 });
 
             if (post.contenu_text !== null && post.contenu_media !== null) {
@@ -266,12 +265,12 @@ allPost("http://localhost:3000/api/post/")
             }
 
             // Ajout d'un like
-            const like = document.getElementById("like");
+            const like = document.getElementById("like" + post.id);
             like.addEventListener("click", () => {
                 const likeValue = {
                     like: 1
                 }
-                likeDislike("http://localhost:3000/api/post/" + post.id + "/like", likeValue)
+                addLikeDislike("http://localhost:3000/api/post/" + post.id + "/like", likeValue)
                     .then(responseLike => {
                         let nbLike = document.getElementById("nb_like" + post.id);
                         nbLike.textContent = responseLike[0].likes;
@@ -279,15 +278,16 @@ allPost("http://localhost:3000/api/post/")
                         nbDislike.innerHTML = responseLike[0].dislikes;
                     })
                     .catch((error) => {
-                        console.log(error, "Problème de communication avec l'API");
+                        console.error(error, "Problème de communication avec l'API");
                     });
             });
-            const dislike = document.getElementById("dislike");
+            // Ajout d'un dislike
+            const dislike = document.getElementById("dislike" + post.id);
             dislike.addEventListener("click", () => {
                 const likeValue = {
                     like: -1
                 }
-                likeDislike("http://localhost:3000/api/post/" + post.id + "/like", likeValue)
+                addLikeDislike("http://localhost:3000/api/post/" + post.id + "/like", likeValue)
                     .then(responseDislike => {
                         let nbLike = document.getElementById("nb_like" + post.id);
                         nbLike.textContent = responseDislike[0].likes;
@@ -295,11 +295,11 @@ allPost("http://localhost:3000/api/post/")
                         nbDislike.innerHTML = responseDislike[0].dislikes;
                     })
                     .catch((error) => {
-                        console.log(error, "Problème de communication avec l'API");
+                        console.error(error, "Problème de communication avec l'API");
                     });
             });
         });
     })
     .catch((error) => {
-        console.log(error, "Problème de communication avec l'API");
+        console.error(error, "Problème de communication avec l'API");
     });

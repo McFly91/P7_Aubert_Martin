@@ -86,6 +86,53 @@ const allComment = async (url) => {
     };
 };
 
+const addLikeDislike = async (url, data) => {
+    try {
+        let response = await fetch(url, {
+            method:"POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${sessionStorage.getItem("token")}`
+            },
+            body: JSON.stringify(data)
+        })
+        let responseJson = await response.json();
+        console.log(response, responseJson)
+        if (response.status === 200) {
+            return responseJson
+        }
+        else {
+            return responseJson.error
+        }
+    }
+    catch (error) {
+        console.error(error);
+    };
+};
+
+const allLikeDislike = async (url) => {
+    try {
+        let response = await fetch(url, {
+            method:"GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${sessionStorage.getItem("token")}`
+            },
+        })
+        let responseJson = await response.json();
+        console.log(response, responseJson)
+        if (response.status === 200) {
+            return responseJson
+        }
+        else {
+            throw error
+        }
+    }
+    catch (error) {
+        console.error(error);
+    };
+};
+
 onePost(url)
     .then(post => {
         console.log(post);
@@ -99,17 +146,18 @@ onePost(url)
         let datePostHtml = "<p class='font-italic'>" + dateCalcul(post[0].date_post) + "</p>";
         let titreHtml = "<h5 class='card-title font-weight-bold'>" + post[0].titre + "</h5>";
         let contenu_textHtml = "<p class='card-text'>" + post[0].contenu_text + "</p>";
-        let idCommentaireHtml = post[0].id;
-        let commentairesHtml = "<p class='btn btn-primary'>Commentaires <span class='badge bg-secondary' id='" + idCommentaireHtml + "'></p>";
-        let likeDislikeHtml = "<p class='m-1'><a class='fas fa-thumbs-up fa-2x pr-2'></a><a class='fas fa-thumbs-down fa-2x align-middle' style='text-decoration:none'></a></p>";
+        let commentairesHtml = "<p class='btn btn-primary mb-4'>Commentaires <span class='badge bg-secondary' id='" + post[0].id + "'></p>";
         let cardHeader = "<div class='card-header d-flex justify-content-between'>" + userHtml + datePostHtml + "</div>";
+        let likeHtml = "<p><a class='fas fa-thumbs-up fa-2x pr-2' id='like'></a><span id='nb_like' class='pr-1'></span></p>";
+        let dislikeHtml = "<p class='pt-2'><a class='fas fa-thumbs-down fa-2x align-middle' style='text-decoration:none' id='dislike'></a> <span id='nb_dislike' class='pr-1'></span></p>";
+        let likeDislikeHtml = "<div class='d-flex m-1'>" + likeHtml + dislikeHtml + "</div>";
         let cardBody = "<div class='card-body px-0 py-0'>" + titreHtml + "</div>";
         let cardBodyText = "<div class='card-body px-0 py-0'>" + titreHtml + contenu_textHtml + "</div>";
         let cardImg = "<p class='text-center'><img class='card-img-bottom py-2 w-25' src=" + post[0].contenu_media + " alt='media post'></p>";
         let cardFooter = "<div class='card-footer text-muted d-flex justify-content-between py-0'>" + commentairesHtml + likeDislikeHtml + "</div>";
         
         // Affichage de l'ensemble des Commentaires
-        allComment("http://localhost:3000/api/post/" + post[0].id + "/comment")
+        allComment(url + "/comment")
         .then(responseComment => {
             let ul = document.createElement("ul");
             ul.classList.add("container","px-0", "col-lg-6", "list-group", "all_comment");
@@ -132,13 +180,13 @@ onePost(url)
             li.innerHTML = "<form id='form' name='form' class='list-group-item bg-light py-1 px-0'><div class='form-group d-flex'>" + commentFormHtml + textInfo + submit + "</div></form>";
             
             // Creation d'un nouveau commentaire
-            let form = document.getElementById("form");
+            const form = document.getElementById("form");
             form.addEventListener("submit", (event) => {
             event.preventDefault();
             const comment = {
                 comment_post: document.getElementById("comment").value,
             };
-            newComment("http://localhost:3000/api/post/" + post[0].id + "/comment", comment)
+            newComment(url + "/comment", comment)
                 .then(response => {
                     if (response.status === 201) {
                         document.location.reload();
@@ -150,9 +198,21 @@ onePost(url)
                     }
                 })
                 .catch((error) => {
-                    console.log(error, "Problème de communication avec l'API");
+                    console.error(error, "Problème de communication avec l'API");
                 })
             })
+
+            // Affichage de l'ensemble des likes/dislikes
+            allLikeDislike(url + "/like")
+                .then(responseLikeDislike => {
+                    let nbLike = document.getElementById("nb_like");
+                    nbLike.textContent = responseLikeDislike[0].likes;
+                    let nbDislike = document.getElementById("nb_dislike");
+                    nbDislike.innerHTML = responseLikeDislike[0].dislikes;
+                })
+                .catch((error) => {
+                    console.error(error, "Problème de communication avec l'API");
+                });
         })
 
         if (post[0].contenu_text !== null && post[0].contenu_media !== null) {
@@ -164,9 +224,42 @@ onePost(url)
         else {
             li.innerHTML = "<div class='card'>" + cardHeader + cardBodyText + cardFooter + "</div>";
         }
+
+        const like = document.getElementById("like");
+            like.addEventListener("click", () => {
+                const likeValue = {
+                    like: 1
+                }
+                addLikeDislike(url + "/like", likeValue)
+                    .then(responseLike => {
+                        let nbLike = document.getElementById("nb_like");
+                        nbLike.textContent = responseLike[0].likes;
+                        let nbDislike = document.getElementById("nb_dislike");
+                        nbDislike.innerHTML = responseLike[0].dislikes;
+                    })
+                    .catch((error) => {
+                        console.error(error, "Problème de communication avec l'API");
+                    });
+            });
+            // Ajout d'un dislike
+            const dislike = document.getElementById("dislike");
+            dislike.addEventListener("click", () => {
+                const likeValue = {
+                    like: -1
+                }
+                addLikeDislike(url + "/like", likeValue)
+                    .then(responseDislike => {
+                        let nbLike = document.getElementById("nb_like");
+                        nbLike.textContent = responseDislike[0].likes;
+                        let nbDislike = document.getElementById("nb_dislike");
+                        nbDislike.innerHTML = responseDislike[0].dislikes;
+                    })
+                    .catch((error) => {
+                        console.error(error, "Problème de communication avec l'API");
+                    });
+            });
+
     })
     .catch((error) => {
-        console.log(error, "Problème de communication avec l'API");
+        console.error(error, "Problème de communication avec l'API");
     });
-
-
