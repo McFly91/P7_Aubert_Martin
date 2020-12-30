@@ -1,138 +1,6 @@
 let idUrl = new URLSearchParams(document.location.search);
 let url = "http://localhost:3000/api/post/" + idUrl.get("id");
 
-const onePost = async (url) => {
-    try {
-        let response = await fetch(url, {
-            method:"GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${sessionStorage.getItem("token")}`
-            },
-        })
-        let responseJson = await response.json();
-        if (response.status === 200) {
-            return responseJson
-        }
-        else {
-            throw error
-        }
-    }
-    catch (error) {
-        console.log(error);
-    };
-};
-
-const dateCalcul = (date_creation) => {
-    let dateNow = Date.now();
-    let dateCreation = Date.parse(date_creation);
-    let dateDiff = dateNow - dateCreation;
-    let date;
-    if (dateDiff > (60000*60) && dateDiff < (60000*60*24)) {
-        return date = "Il y a " + Math.round(dateDiff / (60000*60)) + " Heures";
-    }
-    else if (dateDiff < (60000*60)) {
-        return date = "Il y a " + Math.round(dateDiff / 60000) + " Minutes";
-    }
-    else {
-        return date = "Il y a " + Math.round(dateDiff / (60000*60*24)) + " Jours"
-    };
-};
-
-const newComment = async (url, data) => {
-    try {
-        let response = await fetch(url, {
-            method:"POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${sessionStorage.getItem("token")}`
-            },
-            body: JSON.stringify(data)
-        })
-        let responseJson = await response.json();
-
-        if (response.status === 201) {
-            return response
-        }
-        else {
-            return responseJson
-        }
-    }
-    catch (error) {
-        console.log(error);
-    };
-};
-
-const allComment = async (url) => {
-    try {
-        let response = await fetch(url, {
-            method:"GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${sessionStorage.getItem("token")}`
-            },
-        })
-        let responseJson = await response.json();
-        console.log(response)
-        if (response.status === 200) {
-            return responseJson
-        }
-        else {
-            throw error
-        }
-    }
-    catch (error) {
-        console.log(error);
-    };
-};
-
-const addLikeDislike = async (url, data) => {
-    try {
-        let response = await fetch(url, {
-            method:"POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${sessionStorage.getItem("token")}`
-            },
-            body: JSON.stringify(data)
-        })
-        let responseJson = await response.json();
-        console.log(response, responseJson)
-        if (response.status === 200) {
-            return responseJson
-        }
-        else {
-            return responseJson.error
-        }
-    }
-    catch (error) {
-        console.error(error);
-    };
-};
-
-const allLikeDislike = async (url) => {
-    try {
-        let response = await fetch(url, {
-            method:"GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${sessionStorage.getItem("token")}`
-            },
-        })
-        let responseJson = await response.json();
-        console.log(response, responseJson)
-        if (response.status === 200) {
-            return responseJson
-        }
-        else {
-            throw error
-        }
-    }
-    catch (error) {
-        console.error(error);
-    };
-};
-
 onePost(url)
     .then(post => {
         console.log(post);
@@ -151,6 +19,9 @@ onePost(url)
         let likeHtml = "<p><a class='fas fa-thumbs-up fa-2x pr-2' id='like'></a><span id='nb_like' class='pr-1'></span></p>";
         let dislikeHtml = "<p class='pt-2'><a class='fas fa-thumbs-down fa-2x align-middle' style='text-decoration:none' id='dislike'></a> <span id='nb_dislike' class='pr-1'></span></p>";
         let likeDislikeHtml = "<div class='d-flex m-1'>" + likeHtml + dislikeHtml + "</div>";
+        let modifyHtml = "<button class='fas fa-pencil-alt btn btn-secondary'></button>";
+        let deleteHtml = "<button class='fas fa-times btn btn-danger' id='delete_post'></button>";
+        let modifyDeleteHtml = "<div class='d-flex justify-content-end'>" + modifyHtml + deleteHtml + "</div>";
         let cardBody = "<div class='card-body px-0 py-0'>" + titreHtml + "</div>";
         let cardBodyText = "<div class='card-body px-0 py-0'>" + titreHtml + contenu_textHtml + "</div>";
         let cardImg = "<p class='text-center'><img class='card-img-bottom py-2 w-25' src=" + post[0].contenu_media + " alt='media post'></p>";
@@ -187,14 +58,14 @@ onePost(url)
                 comment_post: document.getElementById("comment").value,
             };
             newComment(url + "/comment", comment)
-                .then(response => {
-                    if (response.status === 201) {
+                .then(responseNewComment => {
+                    if (responseNewComment.status === 201) {
                         document.location.reload();
                         console.log("Commentaire ajouté");
                     }
                     else {
                         let errorInfo = document.getElementById("commentHelp");
-                        errorInfo.textContent = response.error;
+                        errorInfo.textContent = responseNewComment.error;
                     }
                 })
                 .catch((error) => {
@@ -216,15 +87,16 @@ onePost(url)
         })
 
         if (post[0].contenu_text !== null && post[0].contenu_media !== null) {
-            li.innerHTML = "<div class='card'>" + cardHeader + cardBodyText + cardImg + cardFooter + "</div>";
+            li.innerHTML = modifyDeleteHtml + "<div class='card'>" + cardHeader + cardBodyText + cardImg + cardFooter + "</div>";
         }
         else if (post[0].contenu_media !== null) {
-            li.innerHTML = "<div class='card'>" + cardHeader + cardBody + cardImg + cardFooter + "</div>";
+            li.innerHTML = modifyDeleteHtml + "<div class='card'>" + cardHeader + cardBody + cardImg + cardFooter + "</div>";
         }
         else {
-            li.innerHTML = "<div class='card'>" + cardHeader + cardBodyText + cardFooter + "</div>";
+            li.innerHTML = modifyDeleteHtml + "<div class='card'>" + cardHeader + cardBodyText + cardFooter + "</div>";
         }
 
+        // Ajout d'un like
         const like = document.getElementById("like");
             like.addEventListener("click", () => {
                 const likeValue = {
@@ -241,23 +113,35 @@ onePost(url)
                         console.error(error, "Problème de communication avec l'API");
                     });
             });
-            // Ajout d'un dislike
-            const dislike = document.getElementById("dislike");
-            dislike.addEventListener("click", () => {
-                const likeValue = {
-                    like: -1
-                }
-                addLikeDislike(url + "/like", likeValue)
-                    .then(responseDislike => {
-                        let nbLike = document.getElementById("nb_like");
-                        nbLike.textContent = responseDislike[0].likes;
-                        let nbDislike = document.getElementById("nb_dislike");
-                        nbDislike.innerHTML = responseDislike[0].dislikes;
-                    })
-                    .catch((error) => {
-                        console.error(error, "Problème de communication avec l'API");
-                    });
-            });
+        // Ajout d'un dislike
+        const dislike = document.getElementById("dislike");
+        dislike.addEventListener("click", () => {
+            const likeValue = {
+                like: -1
+            }
+            addLikeDislike(url + "/like", likeValue)
+                .then(responseDislike => {
+                    let nbLike = document.getElementById("nb_like");
+                    nbLike.textContent = responseDislike[0].likes;
+                    let nbDislike = document.getElementById("nb_dislike");
+                    nbDislike.innerHTML = responseDislike[0].dislikes;
+                })
+                .catch((error) => {
+                    console.error(error, "Problème de communication avec l'API");
+                });
+        });
+
+        const deletePost = document.getElementById("delete_post");
+        deletePost.addEventListener("click", () => {
+            deleteOnePost(url)
+                .then((responseDeletePost => {
+                    document.location.href="user_page.html";
+                    console.log(responseDeletePost);
+                }))  
+                .catch((error) => {
+                    console.error(error, "Problème de communication avec l'API");
+                });
+        })
 
     })
     .catch((error) => {

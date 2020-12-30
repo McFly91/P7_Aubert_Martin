@@ -70,7 +70,7 @@ exports.modifyPost = (req, res, next) => {
 exports.deletePost = (req, res, next) => {
     postModel.onePost(req.params.id)
         .then(response => {
-                if (res.locals.userId === response[0].user_post) {
+                if (res.locals.userId === response[0].user_id) {
                     if (response[0].contenu_media !== null) {
                         const filename = response[0].contenu_media.split("/images/")[1];
                         fs.unlink(`images/${filename}`, () => {
@@ -82,7 +82,7 @@ exports.deletePost = (req, res, next) => {
                         .catch(error => res.status(500).json({ error }))
                 }  
                 else {
-                    res.status(404).json({ message : "Vous ne pouvez pas supprimer un Post qui ne vous appartient pas" })
+                    res.status(404).json({ error : "Vous ne pouvez pas supprimer un Post qui ne vous appartient pas" })
                 }
         })
         .catch(error => res.status(500).json({ error }))
