@@ -174,6 +174,28 @@ const allComment = async (url) => {
     };
 };
 
+const deleteOneComment = async (url) => {
+    try {
+        let response = await fetch(url, {
+            method:"DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${sessionStorage.getItem("token")}`
+            },
+        })
+        let responseJson = await response.json();
+        if (response.status === 200) {
+            return responseJson
+        }
+        else {
+            return responseJson.error
+        }
+    }
+    catch (error) {
+        console.log(error);
+    };
+};
+
 const addLikeDislike = async (url, data) => {
     try {
         let response = await fetch(url, {

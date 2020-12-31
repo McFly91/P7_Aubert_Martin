@@ -34,7 +34,7 @@ exports.createPost = (req, res, next) => {
 exports.modifyPost = (req, res, next) => {
     postModel.onePost(req.params.id)
         .then(response => {
-                if (res.locals.userId === response[0].user_post) {
+                if (res.locals.userId === response[0].user_ID) {
                     const postObject = req.file ?
                         {
                             ...JSON.parse(req.body.post),

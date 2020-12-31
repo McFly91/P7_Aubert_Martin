@@ -13,19 +13,19 @@ form.addEventListener("submit", (event) => {
         data.append("image", image[0]);
         data.append("post", JSON.stringify(post));
         newPostWithMedia("http://localhost:3000/api/post/", data)
-        .then(response => {
-            if (response.status === 201) {
-                document.location.reload();
-                console.log("Post créé");
-            }
-            else {
-                let errorInfo = document.getElementById("contenuHelp");
-                errorInfo.textContent = response.error;
-            } 
-        })
-        .catch((error) => {
-            console.log(error, "Problème de communication avec l'API");
-        });
+            .then(response => {
+                if (response.status === 201) {
+                    document.location.reload();
+                    console.log("Post créé");
+                }
+                else {
+                    let errorInfo = document.getElementById("contenuHelp");
+                    errorInfo.textContent = response.error;
+                } 
+            })
+            .catch((error) => {
+                console.log(error, "Problème de communication avec l'API");
+            });
     }
     else {
     newPostWithoutMedia("http://localhost:3000/api/post/", post)
@@ -51,7 +51,6 @@ allPost("http://localhost:3000/api/post/")
         let ul = document.createElement("ul");
         ul.classList.add("container","px-0", "col-lg-6", "list-group", "all_posts");
         document.getElementById("all_posts").append(ul);
-        console.log("REPONSE POST :" + response)
         response.forEach(post => {
             console.log(post);
             let li = document.createElement("li");
@@ -76,15 +75,12 @@ allPost("http://localhost:3000/api/post/")
             allComment("http://localhost:3000/api/post/" + post.id + "/comment")
                 .then(responseComment => {
                     responseComment.forEach(comment => {
-                        console.log(comment, post.id)
                         if (comment.post_id === post.id) {
                             document.getElementById(post.id).textContent = responseComment.length;
                         }
                     })
                 })
-                .catch((error) => {
-                    console.error(error, "Problème de communication avec l'API");
-                })
+                .catch((error) => {console.error(error, "Problème de communication avec l'API")});
             
             
             // Affichage de l'ensemble des likes/dislikes
@@ -95,9 +91,7 @@ allPost("http://localhost:3000/api/post/")
                     let nbDislike = document.getElementById("nb_dislike" + post.id);
                     nbDislike.innerHTML = responseLikeDislike[0].dislikes;
                 })
-                .catch((error) => {
-                    console.error(error, "Problème de communication avec l'API");
-                });
+                .catch((error) => {console.error(error, "Problème de communication avec l'API")});
 
             if (post.contenu_text !== null && post.contenu_media !== null) {
                 li.innerHTML = "<div class='card'>" + cardHeader + cardBodyText + cardImg + cardFooter + "</div>";
@@ -122,9 +116,7 @@ allPost("http://localhost:3000/api/post/")
                         let nbDislike = document.getElementById("nb_dislike" + post.id);
                         nbDislike.innerHTML = responseLike[0].dislikes;
                     })
-                    .catch((error) => {
-                        console.error(error, "Problème de communication avec l'API");
-                    });
+                    .catch((error) => {console.error(error, "Problème de communication avec l'API")});
             });
             // Ajout d'un dislike
             const dislike = document.getElementById("dislike" + post.id);
@@ -139,12 +131,8 @@ allPost("http://localhost:3000/api/post/")
                         let nbDislike = document.getElementById("nb_dislike" + post.id);
                         nbDislike.innerHTML = responseDislike[0].dislikes;
                     })
-                    .catch((error) => {
-                        console.error(error, "Problème de communication avec l'API");
-                    });
+                    .catch((error) => {console.error(error, "Problème de communication avec l'API")});
             });
         });
     })
-    .catch((error) => {
-        console.error(error, "Problème de communication avec l'API");
-    });
+    .catch((error) => {console.error(error, "Problème de communication avec l'API")});
