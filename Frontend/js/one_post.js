@@ -19,7 +19,7 @@ onePost(url)
         let likeHtml = "<p><a class='fas fa-thumbs-up fa-2x pr-2' id='like'></a><span id='nb_like' class='pr-1'></span></p>";
         let dislikeHtml = "<p class='pt-2'><a class='fas fa-thumbs-down fa-2x align-middle' style='text-decoration:none' id='dislike'></a> <span id='nb_dislike' class='pr-1'></span></p>";
         let likeDislikeHtml = "<div class='d-flex m-1'>" + likeHtml + dislikeHtml + "</div>";
-        let modifyPostHtml = "<button class='fas fa-pencil-alt btn btn-secondary'></button>";
+        let modifyPostHtml = "<button class='fas fa-pencil-alt btn btn-secondary' id='modify_post'></button>";
         let deletePostHtml = "<button class='fas fa-times btn btn-danger' id='delete_post'></button>";
         let modifyDeletePostHtml = "<div class='d-flex justify-content-end'>" + modifyPostHtml + deletePostHtml + "</div>";
         let modifyCommentHtml = "<button class='fas fa-pencil-alt btn btn-secondary'></button>";
@@ -97,6 +97,8 @@ onePost(url)
             })
             .catch((error) => {console.error(error, "Problème de communication avec l'API")});
 
+            
+
         if (post[0].contenu_text !== null && post[0].contenu_media !== null) {
             li.innerHTML = modifyDeletePostHtml + "<div class='card'>" + cardHeader + cardBodyText + cardImg + cardFooter + "</div>";
         }
@@ -104,24 +106,53 @@ onePost(url)
             li.innerHTML = modifyDeletePostHtml + "<div class='card'>" + cardHeader + cardBody + cardImg + cardFooter + "</div>";
         }
         else {
-            li.innerHTML = modifyDeletePostHtml + "<div class='card'>" + cardHeader + cardBodyText + cardFooter + "</div>";
-        }
+            
+            // Modification d'un Post
+            /*const modifyPost = document.getElementById("modify_post");
+            modifyPost.addEventListener("click", () => {
+                titreHtml = "<div class='form-group'><label for='Titre'>Titre</label><input type='text' class='form-control' id='titre'><small id='titreHelp' class='form-text text-muted'></small></div>";
+                contenu_textHtml = "<div class='form-group'><label for='contenu'>Contenu</label><textarea class='form-control' id='contenu_text' rows='3'></textarea>";
+                cardImg = "<input type='file' id='contenu_media' class='btn'><small id='contenuHelp' class='form-text text-muted'></small></form></div></div>";
+                cardBodyText = "<div class='card-body px-0 py-0'><form id='form' name='form' class='list-group-item'>" + titreHtml + contenu_textHtml;
+                const form = getElementById("form");
+                form.addEventListener("submit", (event) => {
+                    event.preventDefault();
+                    const postModified = {
+                        titre: document.getElementById("titre").value,
+                        contenu_text: document.getElementById("contenu_text").value
+                    }
+                    modifyOnePost(url, postModified)
+                        .then(response => {
+                            if (response.status === 200) {
+                                document.location.reload();
+                                console.log("Post modifié");
+                            }
+                            else {
+                                let errorInfo = document.getElementById("contenuHelp");
+                                errorInfo.textContent = response.error;
+                            } 
+                        }) 
+                        .catch((error) => {console.error(error, "Problème de communication avec l'API")});
+                })
+            })*/
+                li.innerHTML = modifyDeletePostHtml + "<div class='card'>" + cardHeader + cardBodyText + cardFooter + "</div>";
+            }
 
-        // Ajout d'un like
-        const like = document.getElementById("like");
-            like.addEventListener("click", () => {
-                const likeValue = {
-                    like: 1
-                }
-                addLikeDislike(url + "/like", likeValue)
-                    .then(responseLike => {
-                        let nbLike = document.getElementById("nb_like");
-                        nbLike.textContent = responseLike[0].likes;
-                        let nbDislike = document.getElementById("nb_dislike");
-                        nbDislike.innerHTML = responseLike[0].dislikes;
-                    })
-                    .catch((error) => {console.error(error, "Problème de communication avec l'API")});
-            });
+            // Ajout d'un like
+            const like = document.getElementById("like");
+                like.addEventListener("click", () => {
+                    const likeValue = {
+                        like: 1
+                    }
+                    addLikeDislike(url + "/like", likeValue)
+                        .then(responseLike => {
+                            let nbLike = document.getElementById("nb_like");
+                            nbLike.textContent = responseLike[0].likes;
+                            let nbDislike = document.getElementById("nb_dislike");
+                            nbDislike.innerHTML = responseLike[0].dislikes;
+                        })
+                        .catch((error) => {console.error(error, "Problème de communication avec l'API")});
+                });
         // Ajout d'un dislike
         const dislike = document.getElementById("dislike");
         dislike.addEventListener("click", () => {

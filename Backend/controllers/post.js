@@ -34,13 +34,13 @@ exports.createPost = (req, res, next) => {
 exports.modifyPost = (req, res, next) => {
     postModel.onePost(req.params.id)
         .then(response => {
-                if (res.locals.userId === response[0].user_ID) {
+                if (res.locals.userId === response[0].user_id) {
                     const postObject = req.file ?
                         {
                             ...JSON.parse(req.body.post),
                             contenu_media : `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
                         }  : { ...req.body };
-                    if (inputRegex.test(postObject.titre) && (postObject.contenu_text === null || (postObject.contenu_text !== null && inputRegex.test(postObject.contenu_text)))) {
+                    if (inputRegex.test(postObject.titre) && (postObject.contenu_text === "" || (postObject.contenu_text !== "" && inputRegex.test(postObject.contenu_text)))) {
                         if (req.file) {
                             const filename = response[0].contenu_media.split("/images/")[1];
                             fs.unlink(`images/${filename}`, () => {

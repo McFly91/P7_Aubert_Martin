@@ -45,6 +45,30 @@ const newPostWithMedia = async (url, data) => {
     };
 };
 
+const modifyPostWithoutMedia = async (url, data) => {
+    try {
+        let response = await fetch(url, {
+            method:"MODIFY",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${sessionStorage.getItem("token")}`
+            },
+            body: JSON.stringify(data)
+        })
+        let responseJson = await response.json();
+
+        if (response.status === 200) {
+            return response
+        }
+        else {
+            return responseJson
+        }
+    }
+    catch (error) {
+        console.error(error);
+    };
+};
+
 const onePost = async (url) => {
     try {
         let response = await fetch(url, {
@@ -79,6 +103,9 @@ const allPost = async (url) => {
         let responseJson = await response.json();
         if (response.status === 200) {
             return responseJson
+        }
+        else if (response.status === 401) {
+            document.location = "../index.html";
         }
         else {
             throw error
