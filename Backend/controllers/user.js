@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken");
 let decryptedEmails = [];
 
 exports.signup = (req, res, next) => {
-    const emailRegex = /^[^\s@&"()!_$*€£`+=\/;?#<>]*([A-Za-z]|[^<>()\[\]\\\/,;:\s@]){3,}\@([A-Za-z]|[^<>()\[\]\\\/,;:\s@]){3,}\.([A-Za-z]|[^<>()\[\]\\\/.,;:\s@])[^@&"()!_$*€£`+=\/;?#<>]+$/;
+    const emailRegex = /^[^\s@&"()!_$*€£`+=\/;?#<>A-Z0-9]*([a-z]){1,}([a-zA-Z0-9]){2,}\@(groupomania.com|groupomania.fr)/;
     const passwordRegex = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})/;
     const nameRegex = /^[^\s@&"()!_$*€£`+=\/;?#<>]*[A-Za-z]{2,}[^@&()!_$*€£`+=\/;?#<>]*$/;
 
@@ -25,8 +25,8 @@ exports.signup = (req, res, next) => {
                                         .then(
                                             hash => { 
                                                 userModel.userSchema(
-                                                    req.body.nom, 
-                                                    req.body.prenom, 
+                                                    cryptr.encrypt(req.body.nom), 
+                                                    cryptr.encrypt(req.body.prenom),
                                                     cryptr.encrypt(req.body.email), 
                                                     MaskData.maskEmail2(req.body.email), 
                                                     hash);
@@ -52,7 +52,7 @@ exports.signup = (req, res, next) => {
                     return res.status(400).json({ error : "Veuillez réessayer avec une autre adresse email"})
                 };
         })
-        .catch(() => {res.status(404).json({ error : "erreur" })})
+        .catch((error) => {res.status(404).json({ error })})
 };
 
 exports.login = (req, res, next) => {

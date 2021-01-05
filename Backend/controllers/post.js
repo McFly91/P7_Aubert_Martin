@@ -1,5 +1,7 @@
 const postModel = require("../models/post");
 const fs = require("fs");
+const Cryptr = require('cryptr');
+const cryptr = new Cryptr(process.env.CRYPTR_secret);
 
 //Regex pour la vérification des données
 const inputRegex = /^[^\s@&"()!_$*€£`+=\/;?#<>]*[A-Za-z0-9]{1,}/;
@@ -90,7 +92,10 @@ exports.deletePost = (req, res, next) => {
 
 exports.getOnePost = (req, res, next) => {
     postModel.onePost(req.params.id)
-        .then(response => res.status(200).json(response))
+        .then(response => {
+            console.log(response);
+            res.status(200).json(response);
+        })
         .catch(error => res.status(500).json({ error }))
 };
 

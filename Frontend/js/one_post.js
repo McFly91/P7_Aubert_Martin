@@ -33,6 +33,7 @@ onePost(url)
         // Affichage de l'ensemble des Commentaires
         allComment(url + "/comment")
             .then(responseComment => {
+                console.log(responseComment);
                 let ul = document.createElement("ul");
                 ul.classList.add("container","px-0", "col-lg-6", "list-group", "all_comment");
                 document.getElementById("one_post").append(ul);

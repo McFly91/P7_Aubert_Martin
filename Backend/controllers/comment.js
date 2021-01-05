@@ -1,5 +1,7 @@
 const postModel = require("../models/post");
 const commentModel = require("../models/comment");
+const Cryptr = require('cryptr');
+const cryptr = new Cryptr(process.env.CRYPTR_secret);
 
 //Regex pour la vérification des données
 const inputRegex = /^[^\s@&"()!_$*€£`+=\/;?#<>]*[A-Za-z0-9]{1,}/;
@@ -52,12 +54,27 @@ exports.deleteCommentPost = (req, res, next) => {
 
 exports.getOneComment = (req, res, next) => {
     commentModel.oneComment(req.params.idComment)
-    .then(response => res.status(200).json(response))
-    .catch(error => res.status(500).json({ error }))
+        .then(response => res.status(200).json(response))
+        .catch(error => res.status(500).json({ error }))
 };
 
 exports.getAllComment = (req, res, next) => {
     commentModel.allComment(req.params.id)
-        .then(response => res.status(200).json(response))
+        .then(response => {
+            let decryptedResponses = []
+            response.forEach((result => {
+                let decryptedResponse = {
+                    id: result.id,
+                    comment_post: result.comment_post,
+                    date_comment: result.date_comment,
+                    user_id: result.user_id,
+                    post_id: result.post_id,
+                    nom: cryptr.decrypt(result.nom),
+                    prenom: cryptr.decrypt(result.prenom)
+                }
+                decryptedResponses.push(decryptedResponse);
+            }));
+            res.status(200).json(decryptedResponses);
+        })
         .catch(error => res.status(500).json({ error }))
 };
