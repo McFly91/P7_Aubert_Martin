@@ -36,7 +36,7 @@ exports.createPost = (req, res, next) => {
 exports.modifyPost = (req, res, next) => {
     postModel.onePost(req.params.id)
         .then(response => {
-                if (res.locals.userId === response[0].user_id) {
+                if ((res.locals.userId === response[0].user_id) || (res.locals.role === "admin")) {
                     const postObject = req.file ?
                         {
                             ...JSON.parse(req.body.post),
@@ -72,7 +72,7 @@ exports.modifyPost = (req, res, next) => {
 exports.deletePost = (req, res, next) => {
     postModel.onePost(req.params.id)
         .then(response => {
-                if (res.locals.userId === response[0].user_id) {
+                if ((res.locals.userId === response[0].user_id) || (res.locals.role === "admin")) {
                     if (response[0].contenu_media !== null) {
                         const filename = response[0].contenu_media.split("/images/")[1];
                         fs.unlink(`images/${filename}`, () => {
@@ -93,14 +93,45 @@ exports.deletePost = (req, res, next) => {
 exports.getOnePost = (req, res, next) => {
     postModel.onePost(req.params.id)
         .then(response => {
-            console.log(response);
-            res.status(200).json(response);
+            let decryptedResponses = []
+            response.forEach((result => {
+                let decryptedResponse = {
+                    id: result.id,
+                    titre: result.titre,
+                    contenu_text: result.contenu_text,
+                    contenu_media: result.contenu_media,
+                    date_post: result.date_post,
+                    user_id: result.user_id,
+                    post_id: result.post_id,
+                    nom: cryptr.decrypt(result.nom),
+                    prenom: cryptr.decrypt(result.prenom)
+                }
+                decryptedResponses.push(decryptedResponse);
+            }));
+            res.status(200).json(decryptedResponses);
         })
         .catch(error => res.status(500).json({ error }))
 };
 
 exports.getAllPosts = (req, res, next) => {
     postModel.allPost()
-        .then(response => res.status(200).json(response))
+        .then(response => {
+            let decryptedResponses = []
+            response.forEach((result => {
+                let decryptedResponse = {
+                    id: result.id,
+                    titre: result.titre,
+                    contenu_text: result.contenu_text,
+                    contenu_media: result.contenu_media,
+                    date_post: result.date_post,
+                    user_id: result.user_id,
+                    post_id: result.post_id,
+                    nom: cryptr.decrypt(result.nom),
+                    prenom: cryptr.decrypt(result.prenom)
+                }
+                decryptedResponses.push(decryptedResponse);
+            }));
+            res.status(200).json(decryptedResponses);
+        })
         .catch(error => res.status(500).json({ error }))
 };

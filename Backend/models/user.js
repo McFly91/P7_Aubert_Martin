@@ -27,7 +27,7 @@ exports.encryptedEmailsSignup = () => {
 exports.encryptedEmailsLogin = () => {
     try {
         return new Promise((resolve) => {
-            connectionDB.query("SELECT id, email, password FROM User;", (error, results) => {
+            connectionDB.query("SELECT id, email, password, role FROM User;", (error, results) => {
                 if (results === undefined) {
                     resolve (error = "Erreur dans la requête");
                 }
