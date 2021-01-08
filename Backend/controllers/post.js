@@ -103,6 +103,7 @@ exports.getOnePost = (req, res, next) => {
                     date_post: result.date_post,
                     user_id: result.user_id,
                     post_id: result.post_id,
+                    role: result.role,
                     nom: cryptr.decrypt(result.nom),
                     prenom: cryptr.decrypt(result.prenom)
                 }
