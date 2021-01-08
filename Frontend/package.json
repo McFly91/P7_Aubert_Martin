@@ -17,9 +17,5 @@
   },
   "homepage": "https://github.com/McFly91/P7_Aubert_Martin#readme",
   "dependencies": {
-    "bootstrap": "^4.5.3",
-    "font-awesome": "^4.7.0",
-    "jquery": "^3.5.1",
-    "popper.js": "^1.16.1"
   }
 }

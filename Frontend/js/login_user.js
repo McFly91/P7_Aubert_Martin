@@ -40,6 +40,8 @@ form.addEventListener("submit", (event) => {
     loginUser("http://localhost:3000/api/auth/login", idLogin)
         .then(response => {
                 sessionStorage.setItem("token", response.token);
+                sessionStorage.setItem("userId", response.userId);
+                sessionStorage.setItem("role", response.role);
                 window.location.href = "user_page.html";
         })
         .catch(error => console.error(error))

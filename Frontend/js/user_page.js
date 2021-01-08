@@ -1,6 +1,6 @@
 const form = document.getElementById("form");
 
-// Ajout d'un nouveau Post
+// DEBUT SECTION ajout d'un POST
 form.addEventListener("submit", (event) => {
     event.preventDefault();
     const image = document.getElementById("contenu_media").files;
@@ -8,6 +8,7 @@ form.addEventListener("submit", (event) => {
         titre: document.getElementById("titre").value,
         contenu_text: document.getElementById("contenu_text").value
     };
+    // Ajout d'un Post avec image
     if (image[0] !== undefined) {
         const data = new FormData();
         data.append("image", image[0]);
@@ -16,36 +17,32 @@ form.addEventListener("submit", (event) => {
             .then(response => {
                 if (response.status === 201) {
                     document.location.reload();
-                    console.log("Post créé");
                 }
                 else {
                     let errorInfo = document.getElementById("contenuHelp");
                     errorInfo.textContent = response.error;
                 } 
             })
-            .catch((error) => {
-                console.log(error, "Problème de communication avec l'API");
-            });
+            .catch((error) => {console.error(error, "Problème de communication avec l'API")});
     }
+    // Ajout d'un Post sans image
     else {
     newPostWithoutMedia("http://localhost:3000/api/post/", post)
         .then(response => {
             if (response.status === 201) {
                 document.location.reload();
-                console.log("Post créé");
             }
             else {
                 let errorInfo = document.getElementById("contenuHelp");
                 errorInfo.textContent = response.error;
             } 
         })
-        .catch((error) => {
-            console.log(error, "Problème de communication avec l'API");
-        }); 
+        .catch((error) => {console.error(error, "Problème de communication avec l'API")}); 
     }
 });
+// FIN SECTION ajout d'un POST
 
-// Affichage de l'ensemble des Posts
+// DEBUT SECTION Affichage de l'ensemble des Posts //
 allPost("http://localhost:3000/api/post/")
     .then(response => {
         let ul = document.createElement("ul");
@@ -71,6 +68,7 @@ allPost("http://localhost:3000/api/post/")
             let cardImg = "<p class='text-center'><img class='card-img-bottom py-2 w-25' src=" + post.contenu_media + " alt='media post'></p>";
             let cardFooter = "<div class='card-footer text-muted d-flex justify-content-between py-0'>" + commentairesHtml + likeDislikeHtml + "</div>";
 
+            // DEBUT SECTION Commentaires //
             // Affichage du nombre de commentaires pour chaque Post
             allComment("http://localhost:3000/api/post/" + post.id + "/comment")
                 .then(responseComment => {
@@ -79,16 +77,6 @@ allPost("http://localhost:3000/api/post/")
                             document.getElementById(post.id).textContent = responseComment.length;
                         }
                     })
-                })
-                .catch((error) => {console.error(error, "Problème de communication avec l'API")});
-            
-            // Affichage de l'ensemble des likes/dislikes
-            allLikeDislike("http://localhost:3000/api/post/" + post.id + "/like")
-                .then(responseLikeDislike => {
-                    let nbLike = document.getElementById("nb_like_" + post.id);
-                    nbLike.textContent = responseLikeDislike[0].likes;
-                    let nbDislike = document.getElementById("nb_dislike_" + post.id);
-                    nbDislike.innerHTML = responseLikeDislike[0].dislikes;
                 })
                 .catch((error) => {console.error(error, "Problème de communication avec l'API")});
 
@@ -102,11 +90,10 @@ allPost("http://localhost:3000/api/post/")
                 li.innerHTML = "<div class='card' id='post_" + post.id + "'>" + cardLink + cardHeader + cardBodyText + "</a>" + cardFooter + "</div>";
             }
             
-            // Affichage des commentaires pour chaque Post
+            // Affichage des commentaires pour chaque Post au click sur le bouton Commentaires
             const commentButton = document.getElementById("comment_button_" + post.id);
             let i = true;
             commentButton.addEventListener("click", () => {
-                
                 if (i === false) {
                     document.getElementById("comment_" + post.id).remove(document.getElementById("comment_" + post.id));
                     i = true;
@@ -122,15 +109,58 @@ allPost("http://localhost:3000/api/post/")
                                     let li = document.createElement("li");
                                     li.classList.add("list-group-item", "bg-light", "py-0");
                                     document.querySelector(".all_comment").prepend(li);
-                                    let userCommentHtml = "<div class='card-header py-0'><h6>" + comment.prenom + " " + comment.nom + "</h6></div>";
+                                    let userCommentHtml = "<h6>" + comment.prenom + " " + comment.nom + "</h6>";
+                                    let dateCommentHtml = "<p class='font-italic mb-1'>" + dateCalcul(comment.date_comment) + "</p>";
                                     let commentPostHtml = "<div class='card-body py-0'><p>" + comment.comment_post + "</p></div>";
-                                    li.innerHTML = "<div class='card'>" + userCommentHtml + commentPostHtml + "</div>";
+                                    let cardHeaderComment = "<div class='card-header py-0 d-flex justify-content-between'>" + userCommentHtml + dateCommentHtml + "</div>";
+                                    li.innerHTML = "<div class='card'>" + cardHeaderComment + commentPostHtml + "</div>";
                             })
+                            // DEBUT SECTION nouveau commentaire //
+                            let li = document.createElement("li");
+                            li.classList.add("list-group-item", "bg-light", "py-0");
+                            document.querySelector(".all_comment").prepend(li);
+                            let commentFormHtml = "<textarea class='form-control' id='comment' rows='1' placeholder='Nouveau commentaire...'></textarea>";
+                            let textInfo = "<small id='commentHelp' class='form-text text-muted'></small>"
+                            let submit = "<input type='submit' class='btn btn-primary mx-1' id='form_submit' value='Publier'>";
+                            li.innerHTML = "<form id='form_" + post.id + "' name='form' class='list-group-item bg-light py-1 px-0'><div class='form-group d-flex'>" + commentFormHtml + textInfo + submit + "</div></form>";
+                            // Creation d'un nouveau commentaire
+                            const formComment = document.getElementById("form_" + post.id);
+                            formComment.addEventListener("submit", (event) => {
+                            event.preventDefault();
+                            const comment = {
+                                comment_post: document.getElementById("comment").value,
+                            };
+                            newComment("http://localhost:3000/api/post/" + post.id + "/comment", comment)
+                                .then(responseNewComment => {
+                                    if (responseNewComment.status === 201) {
+                                        document.location.reload();
+                                        console.log("Commentaire ajouté");
+                                    }
+                                    else {
+                                        let errorInfo = document.getElementById("commentHelp");
+                                        errorInfo.textContent = responseNewComment.error;
+                                    }
+                                })
+                                .catch((error) => {console.error(error, "Problème de communication avec l'API")});
+                            })
+                            // FIN SECTION nouveau commentaire //
                             i = false;
                         })
                         .catch((error) => {console.error(error, "Problème de communication avec l'API")});
                 } 
             });
+            // FIN SECTION Commentaires //
+
+            // DEBUT SECTION Like/Dislike //
+            // Affichage de l'ensemble des likes/dislikes
+            allLikeDislike("http://localhost:3000/api/post/" + post.id + "/like")
+                .then(responseLikeDislike => {
+                    let nbLike = document.getElementById("nb_like_" + post.id);
+                    nbLike.textContent = responseLikeDislike[0].likes;
+                    let nbDislike = document.getElementById("nb_dislike_" + post.id);
+                    nbDislike.innerHTML = responseLikeDislike[0].dislikes;
+                })
+                .catch((error) => {console.error(error, "Problème de communication avec l'API")});
 
             // Ajout d'un like
             const like = document.getElementById("like_" + post.id);
@@ -162,6 +192,8 @@ allPost("http://localhost:3000/api/post/")
                     })
                     .catch((error) => {console.error(error, "Problème de communication avec l'API")});
             });
+            // FIN SECTION Like/Dislike //
         });
     })
     .catch((error) => {console.error(error, "Problème de communication avec l'API")});
+// FIN SECTION Affichage de l'ensemble des Posts //
