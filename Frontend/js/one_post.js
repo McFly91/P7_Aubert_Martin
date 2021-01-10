@@ -23,21 +23,18 @@ onePost(url)
         let likeDislikeHtml = "<div class='d-flex m-1'>" + likeHtml + dislikeHtml + "</div>";
         let modifyPostHtml = "<button class='fas fa-pencil-alt btn btn-secondary' id='modify_post'></button>";
         let deletePostHtml = "<button class='fas fa-times btn btn-danger' id='delete_post'></button>"; 
-        let modifyCommentHtml = "<button class='fas fa-pencil-alt btn btn-secondary'></button>";
-        let deleteCommentHtml = "<button class='fas fa-times btn btn-danger' id='delete_comment'></button>";
-        let modifyDeletePostHtml;
-        let modifyDeleteCommentHtml;
+        let modifyDeletePostHtml = "";
+        let modifyDeleteCommentHtml = "";
         // Condition de suppression d'un Post ou d'un Commentaire pour l'Admin
-        if (role === "admin") {
-            modifyDeletePostHtml = "<div class='d-flex justify-content-end'>" + deletePostHtml + "</div>";
-            modifyDeleteCommentHtml = "<div class='d-flex justify-content-end'>" + deleteCommentHtml + "</div>";
-        }
         // Condition de suppression et de modification pour l'auteur du Post
-        else if (post[0].user_id == userId) {
+        if (post[0].user_id == userId) {
             modifyDeletePostHtml = "<div class='d-flex justify-content-end'>" + modifyPostHtml + deletePostHtml + "</div>";
         }
+        else if (role === "admin") {
+            modifyDeletePostHtml = "<div class='d-flex justify-content-end'>" + deletePostHtml + "</div>";
+        }
         else {
-            modifyDeletePostHtml = "";
+            modifyDeletePostHtml;
         }
 
         // Affichage de l'ensemble des éléments sur la page HTML
@@ -60,7 +57,7 @@ onePost(url)
         // Affichage de l'ensemble des Commentaires
         allComment(url + "/comment")
             .then(responseComment => {
-                console.log(responseComment);
+                console.log("RESPONSE COMMENT : " + responseComment);
                 let ul = document.createElement("ul");
                 ul.classList.add("container","px-0", "col-lg-6", "list-group", "all_comment");
                 document.getElementById("one_post").append(ul);
@@ -73,25 +70,34 @@ onePost(url)
                     let dateCommentHtml = "<p class='font-italic mb-1'>" + dateCalcul(comment.date_comment) + "</p>";
                     let commentPostHtml = "<div class='card-body py-0'><p>" + comment.comment_post + "</p></div>";
                     let cardHeaderComment = "<div class='card-header py-0 d-flex justify-content-between'>" + userCommentHtml + dateCommentHtml + "</div>";
+                    let modifyCommentHtml = "<button class='fas fa-pencil-alt btn btn-secondary'></button>";
+                    let deleteCommentHtml = "<button class='fas fa-times btn btn-danger' id='delete_comment_" + comment.id + "'></button>";
+                    let modifyDeleteCommentHtml = "";
 
-                    if (responseComment[0].user_id == userId) {
+                    if (comment.user_id == userId) {
                         modifyDeleteCommentHtml = "<div class='d-flex justify-content-end'>" + modifyCommentHtml + deleteCommentHtml + "</div>";
                     }
+                    else if (role === "admin") {
+                        modifyDeleteCommentHtml = "<div class='d-flex justify-content-end'>" + deleteCommentHtml + "</div>";
+                    }
                     else {
-                        modifyDeleteCommentHtml = "";
+                        modifyDeleteCommentHtml;
                     }
                     li.innerHTML = modifyDeleteCommentHtml + "<div class='card'>" + cardHeaderComment + commentPostHtml + "</div>";
 
                     // Suppression d'un Commentaire
-                    const deleteComment = document.getElementById("delete_comment");
-                    deleteComment.addEventListener("click", () => {
-                    deleteOneComment(url + "/comment/" + comment.id)
-                        .then((responseDeleteComment => {
-                            document.location.reload();
-                            console.log(responseDeleteComment);
-                        }))  
-                        .catch((error) => {console.error(error, "Problème de communication avec l'API")});
-                    }) 
+                    if ((comment.user_id == userId) || (role === "admin")) {
+                        const deleteComment = document.getElementById("delete_comment_" + comment.id);
+                        deleteComment.addEventListener("click", () => {
+                        deleteOneComment(url + "/comment/" + comment.id)
+                            .then((responseDeleteComment => {
+                                document.location.reload();
+                                console.log(responseDeleteComment);
+                            }))  
+                            .catch((error) => {console.error(error, "Problème de communication avec l'API")});
+                        }) 
+                    }
+                    
                 })
 
                 // DEBUT SECTION nouveau commentaire //

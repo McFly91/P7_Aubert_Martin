@@ -43,11 +43,17 @@ exports.modifyCommentPost = (req, res, next) => {
 };
 
 exports.deleteCommentPost = (req, res, next) => {
-    postModel.onePost(req.params.id)
+    commentModel.oneComment(req.params.idComment)
         .then(response => {
-            commentModel.delete(req.params.idComment, res.locals.userId, response[0].id)
-                .then(() => res.status(200).json({ message : "Commentaire supprimé"}))
-                .catch(error => res.status(500).json({ error }))
+            console.log(response[0]);
+            if ((res.locals.userId === response[0].user_id) || (res.locals.role === "admin")) {
+                commentModel.delete(req.params.idComment, response[0].post_id)
+                    .then(() => res.status(200).json({ message : "Commentaire supprimé"}))
+                    .catch(error => res.status(500).json({ error }))
+            }
+            else {
+                res.status(404).json({ error : "Vous ne pouvez pas supprimer un Commentaire qui ne vous appartient pas" })
+            }
         })
         .catch(error => res.status(500).json({ error }))
 };
@@ -69,6 +75,7 @@ exports.getAllComment = (req, res, next) => {
                     date_comment: result.date_comment,
                     user_id: result.user_id,
                     post_id: result.post_id,
+                    role: result.role,
                     nom: cryptr.decrypt(result.nom),
                     prenom: cryptr.decrypt(result.prenom)
                 }

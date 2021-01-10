@@ -36,7 +36,7 @@ exports.createPost = (req, res, next) => {
 exports.modifyPost = (req, res, next) => {
     postModel.onePost(req.params.id)
         .then(response => {
-                if ((res.locals.userId === response[0].user_id) || (res.locals.role === "admin")) {
+                if (res.locals.userId === response[0].user_id) {
                     const postObject = req.file ?
                         {
                             ...JSON.parse(req.body.post),
