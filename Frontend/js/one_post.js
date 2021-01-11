@@ -119,6 +119,7 @@ onePost(url)
                     }
                 })
             })
+        }
 
             // Suppression d'un Post
             const deletePost = document.getElementById("delete_post");
@@ -130,8 +131,6 @@ onePost(url)
                     }))  
                     .catch((error) => {console.error(error, "Problème de communication avec l'API")});
             })
-
-        }
         // FIN SECTION Modification d'un POST //
 
         // DEBUT SECTION Commentaires //
@@ -150,10 +149,10 @@ onePost(url)
                     let dateCommentHtml = "<p class='font-italic mb-1'>" + dateCalcul(comment.date_comment) + "</p>";
                     let commentPostHtml = "<div class='card-body py-0'><p>" + comment.comment_post + "</p></div>";
                     let cardHeaderComment = "<div class='card-header py-0 d-flex justify-content-between'>" + userCommentHtml + dateCommentHtml + "</div>";
-                    let modifyCommentHtml = "<button class='fas fa-pencil-alt btn btn-secondary'></button>";
+                    let modifyCommentHtml = "<button class='fas fa-pencil-alt btn btn-secondary' id='modify_comment_" + comment.id + "'></button>";
                     let deleteCommentHtml = "<button class='fas fa-times btn btn-danger' id='delete_comment_" + comment.id + "'></button>";
                     let modifyDeleteCommentHtml = "";
-
+                    
                     // Condition de modification et de suppression pour l'auteur du commentaire
                     if (comment.user_id == userId) {
                         modifyDeleteCommentHtml = "<div class='d-flex justify-content-end'>" + modifyCommentHtml + deleteCommentHtml + "</div>";
@@ -168,6 +167,40 @@ onePost(url)
                     // Affichage de l'ensemble des éléments sur la page HTML
                     li.innerHTML = modifyDeleteCommentHtml + "<div class='card'>" + cardHeaderComment + commentPostHtml + "</div>";
 
+                    // DEBUT SECTION Modification et Suppression d'un Commentaire //
+                    if (comment.user_id == userId) {
+                        // Modification d'un Post
+                        const modifyCommentButton = document.getElementById("modify_comment_" + comment.id);
+                        modifyCommentButton.addEventListener("click", () => {
+                            commentPostHtml = "<div class='form-group d-flex'><textarea class='form-control' id='modify_contenu_comment_" + comment.id + "' rows='1'>" + comment.comment_post + "</textarea>";
+                            let textInfo = "<small id='modify_commentHelp_" + comment.id + "' class='form-text text-muted'></small>";
+                            let cardModifyComment = "<div class='card-body px-0 py-0'><form id='modify_form_comment_" + comment.id + "' name='form' class='list-group-item bg-light'>" + commentPostHtml;
+                            let modifySubmit = "<div class='mx-1'><input type='submit' class='btn btn-primary' value='Publier'></div></form>";
+
+                            li.innerHTML = modifyDeletePostHtml + "<div class='card'>" + cardHeaderComment + cardModifyComment + textInfo + modifySubmit + "</div>";
+
+                            const modifyFormComment = document.getElementById("modify_form_comment_" + comment.id);
+                            modifyFormComment.addEventListener("submit", (event) => {
+                                event.preventDefault();
+                                const commentModified = {
+                                    comment_post: document.getElementById("modify_contenu_comment_" + comment.id).value,
+                                };
+                                modifyComment(url + "/comment/" + comment.id, commentModified)
+                                    .then(responseModifyComment => {
+                                        if (responseModifyComment.status === 200) {
+                                            document.location.reload();
+                                            console.log("Commentaire modifié");
+                                        }
+                                        else {
+                                            let errorInfo = document.getElementById("modify_commentHelp_" + comment.id);
+                                            errorInfo.textContent = responseModifyComment.error;
+                                        } 
+                                    })
+                                    .catch((error) => {console.error(error, "Problème de communication avec l'API")}); 
+                            })
+                        })
+                    }
+
                     // Suppression d'un Commentaire
                     if ((comment.user_id == userId) || (role === "admin")) {
                         const deleteComment = document.getElementById("delete_comment_" + comment.id);
@@ -180,7 +213,7 @@ onePost(url)
                             .catch((error) => {console.error(error, "Problème de communication avec l'API")});
                         }) 
                     }
-                    
+                    // FIN SECTION Modification et Suppression d'un Commentaire //  
                 })
 
                 // DEBUT SECTION nouveau commentaire //

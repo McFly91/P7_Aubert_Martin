@@ -7,10 +7,10 @@ exports.newComment = (comment_post, user_id, post_id) => {
     })
 };
 
-exports.modify = (comment_post, comment_id, user_id, post_id) => {
+exports.modify = (comment_post, comment_id) => {
     try {
         return new Promise((resolve, reject) => {
-            connectionDB.query("UPDATE Comment SET comment_post = ?, date_comment = CURRENT_TIMESTAMP WHERE id = ? AND user_id = ? AND post_id = ?;", [comment_post, comment_id, user_id, post_id], (error, results) => {
+            connectionDB.query("UPDATE Comment SET comment_post = ?, date_comment = CURRENT_TIMESTAMP WHERE id = ?;", [comment_post, comment_id], (error, results) => {
                 if (results === undefined) {
                     reject ("Erreur dans la requête");
                 }

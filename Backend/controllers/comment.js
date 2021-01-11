@@ -24,19 +24,20 @@ exports.newCommentPost = (req, res, next) => {
 };
 
 exports.modifyCommentPost = (req, res, next) => {
-    postModel.onePost(req.params.id)
+    commentModel.oneComment(req.params.idComment)
         .then(response => {
-            if (inputRegex.test(req.body.comment_post)) {
-                commentModel.modify(
-                    req.body.comment_post,
-                    req.params.idComment,
-                    res.locals.userId,
-                    response[0].id)
-                    .then(() => res.status(200).json({ message : "Commentaire modifié" }))
-                    .catch(error => res.status(500).json({ error }))
+            if (res.locals.userId === response[0].user_id) {
+                if (inputRegex.test(req.body.comment_post)) {
+                    commentModel.modify(req.body.comment_post, req.params.idComment)
+                        .then(() => res.status(200).json({ message : "Commentaire modifié" }))
+                        .catch(error => res.status(500).json({ error }))
+                }
+                else {
+                    return res.status(400).json({ error : "Erreur dans l'entrée des données, veuillez rentrer des informations pertinantes" });
+                }
             }
             else {
-                return res.status(400).json({ error : "Erreur dans l'entrée des données, veuillez rentrer des informations pertinantes" });
+                res.status(404).json({ message : "Vous ne pouvez pas modifier un Commentaire qui ne vous appartient pas" })
             }
         })
         .catch(error => res.status(500).json({ error }))

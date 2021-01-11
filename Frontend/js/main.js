@@ -201,6 +201,30 @@ const newComment = async (url, data) => {
     };
 };
 
+const modifyComment = async (url, data) => {
+    try {
+        let response = await fetch(url, {
+            method:"PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${sessionStorage.getItem("token")}`
+            },
+            body: JSON.stringify(data)
+        })
+        let responseJson = await response.json();
+
+        if (response.status === 200) {
+            return response
+        }
+        else {
+            return responseJson
+        }
+    }
+    catch (error) {
+        console.log(error);
+    };
+};
+
 const allComment = async (url) => {
     try {
         let response = await fetch(url, {
