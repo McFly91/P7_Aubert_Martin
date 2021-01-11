@@ -94,6 +94,7 @@ allPost("http://localhost:3000/api/post/")
             const commentButton = document.getElementById("comment_button_" + post.id);
             let i = true;
             commentButton.addEventListener("click", () => {
+                console.log(i)
                 if (i === false) {
                     document.getElementById("comment_" + post.id).remove(document.getElementById("comment_" + post.id));
                     i = true;

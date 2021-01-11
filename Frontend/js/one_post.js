@@ -24,12 +24,12 @@ onePost(url)
         let modifyPostHtml = "<button class='fas fa-pencil-alt btn btn-secondary' id='modify_post'></button>";
         let deletePostHtml = "<button class='fas fa-times btn btn-danger' id='delete_post'></button>"; 
         let modifyDeletePostHtml = "";
-        let modifyDeleteCommentHtml = "";
-        // Condition de suppression d'un Post ou d'un Commentaire pour l'Admin
+
         // Condition de suppression et de modification pour l'auteur du Post
         if (post[0].user_id == userId) {
             modifyDeletePostHtml = "<div class='d-flex justify-content-end'>" + modifyPostHtml + deletePostHtml + "</div>";
         }
+        // Condition de suppression d'un Post pour l'Admin
         else if (role === "admin") {
             modifyDeletePostHtml = "<div class='d-flex justify-content-end'>" + deletePostHtml + "</div>";
         }
@@ -50,14 +50,94 @@ onePost(url)
             li.innerHTML = modifyDeletePostHtml + "<div class='card'>" + cardHeader + cardBody + cardImg + cardFooter + "</div>";
         }
         else {
-                li.innerHTML = modifyDeletePostHtml + "<div class='card'>" + cardHeader + cardBodyText + cardFooter + "</div>";
+            li.innerHTML = modifyDeletePostHtml + "<div class='card'>" + cardHeader + cardBodyText + cardFooter + "</div>";
         }
+
+        // DEBUT SECTION Modification et Suppression d'un POST //
+        if (post[0].user_id == userId) {
+            // Modification d'un Post
+            const modifyPost = document.getElementById("modify_post");
+            modifyPost.addEventListener("click", () => {
+                titreHtml = "<div class='form-group'><label for='Titre'>Titre</label><input type='text' class='form-control' id='modify_titre' value='" + post[0].titre + "'><small id='titreHelp' class='form-text text-muted'></small></div>";
+                contenu_textHtml = "<div class='form-group'><label for='contenu'>Contenu</label><textarea class='form-control' id='modify_contenu_text' rows='3'>" + post[0].contenu_text + "</textarea>";
+                cardImg = "<p class='text-center'><img class='card-img-bottom py-2 w-25' src=" + post[0].contenu_media + " alt='media post'></p>";
+                modifyImg = "<input type='file' id='modify_contenu_media' class='btn'><small id='modify_contenuHelp' class='form-text text-muted'></small></div>";
+                cardBodyText = "<div class='card-body px-0 py-0'><form id='modify_form_post' name='form' class='list-group-item'>" + titreHtml + contenu_textHtml;
+                let modifySubmit = "<div class='col d-flex justify-content-around'><input type='submit' class='btn btn-primary' value='Publier'></div></form>";
+
+                if (post[0].contenu_text !== null && post[0].contenu_media !== null) {
+                    li.innerHTML = modifyDeletePostHtml + "<div class='card'>" + cardHeader + cardBodyText + cardImg + modifyImg + modifySubmit + cardFooter + "</div>";
+                }
+                else if (post[0].contenu_media !== null) {
+                    li.innerHTML = modifyDeletePostHtml + "<div class='card'>" + cardHeader + cardBodyText + cardImg + modifyImg + modifySubmit + cardFooter + "</div>";
+                }
+                else {
+                        li.innerHTML = modifyDeletePostHtml + "<div class='card'>" + cardHeader + cardBodyText + modifyImg + modifySubmit + cardFooter + "</div>";
+                }
+                
+                const modifyFormPost = document.getElementById("modify_form_post");
+                modifyFormPost.addEventListener("submit", (event) => {
+                    event.preventDefault();
+                    const image = document.getElementById("modify_contenu_media").files;
+                    const postModified = {
+                        titre: document.getElementById("modify_titre").value,
+                        contenu_text: document.getElementById("modify_contenu_text").value
+                    }
+                    console.log(postModified);
+                    // Modification d'un Post avec image
+                    if (image[0] !== undefined) {
+                        const data = new FormData();
+                        data.append("image", image[0]);
+                        data.append("post", JSON.stringify(postModified));
+                        modifyPostWithMedia(url, data)
+                            .then(responseModifyPost => {
+                                if (responseModifyPost.status === 200) {
+                                    document.location.reload();
+                                    console.log("Post modifié");
+                                }
+                                else {
+                                    let errorInfo = document.getElementById("modify_contenuHelp");
+                                    errorInfo.textContent = response.error;
+                                } 
+                            })
+                            .catch((error) => {console.error(error, "Problème de communication avec l'API")});
+                    }
+                    // Modification d'un Post sans image
+                    else {
+                        modifyPostWithoutMedia(url, postModified)
+                            .then(responseModifyPost => {
+                                if (responseModifyPost.status === 200) {
+                                    document.location.reload();
+                                    console.log("Post modifié");
+                                }
+                                else {
+                                    let errorInfo = document.getElementById("modify_contenuHelp");
+                                    errorInfo.textContent = response.error;
+                                } 
+                            })
+                            .catch((error) => {console.error(error, "Problème de communication avec l'API")}); 
+                    }
+                })
+            })
+
+            // Suppression d'un Post
+            const deletePost = document.getElementById("delete_post");
+            deletePost.addEventListener("click", () => {
+                deleteOnePost(url)
+                    .then((responseDeletePost => {
+                        document.location.href="user_page.html";
+                        console.log(responseDeletePost);
+                    }))  
+                    .catch((error) => {console.error(error, "Problème de communication avec l'API")});
+            })
+
+        }
+        // FIN SECTION Modification d'un POST //
 
         // DEBUT SECTION Commentaires //
         // Affichage de l'ensemble des Commentaires
         allComment(url + "/comment")
             .then(responseComment => {
-                console.log("RESPONSE COMMENT : " + responseComment);
                 let ul = document.createElement("ul");
                 ul.classList.add("container","px-0", "col-lg-6", "list-group", "all_comment");
                 document.getElementById("one_post").append(ul);
@@ -74,15 +154,18 @@ onePost(url)
                     let deleteCommentHtml = "<button class='fas fa-times btn btn-danger' id='delete_comment_" + comment.id + "'></button>";
                     let modifyDeleteCommentHtml = "";
 
+                    // Condition de modification et de suppression pour l'auteur du commentaire
                     if (comment.user_id == userId) {
                         modifyDeleteCommentHtml = "<div class='d-flex justify-content-end'>" + modifyCommentHtml + deleteCommentHtml + "</div>";
                     }
+                    // Condition de suppression d'un Commentaire pour l'Admin
                     else if (role === "admin") {
                         modifyDeleteCommentHtml = "<div class='d-flex justify-content-end'>" + deleteCommentHtml + "</div>";
                     }
                     else {
                         modifyDeleteCommentHtml;
                     }
+                    // Affichage de l'ensemble des éléments sur la page HTML
                     li.innerHTML = modifyDeleteCommentHtml + "<div class='card'>" + cardHeaderComment + commentPostHtml + "</div>";
 
                     // Suppression d'un Commentaire
@@ -175,47 +258,6 @@ onePost(url)
                 .catch((error) => {console.error(error, "Problème de communication avec l'API")});
         });
         // FIN SECTION Like/Dislike //  
-
-        // Suppression d'un Post
-        const deletePost = document.getElementById("delete_post");
-        deletePost.addEventListener("click", () => {
-            deleteOnePost(url)
-                .then((responseDeletePost => {
-                    document.location.href="user_page.html";
-                    console.log(responseDeletePost);
-                }))  
-                .catch((error) => {console.error(error, "Problème de communication avec l'API")});
-        })
-
     })
     .catch((error) => {console.error(error, "Problème de communication avec l'API")});
 // FIN SECTION Affichage d'un Post //
-
-// Modification d'un Post
-            /*const modifyPost = document.getElementById("modify_post");
-            modifyPost.addEventListener("click", () => {
-                titreHtml = "<div class='form-group'><label for='Titre'>Titre</label><input type='text' class='form-control' id='titre'><small id='titreHelp' class='form-text text-muted'></small></div>";
-                contenu_textHtml = "<div class='form-group'><label for='contenu'>Contenu</label><textarea class='form-control' id='contenu_text' rows='3'></textarea>";
-                cardImg = "<input type='file' id='contenu_media' class='btn'><small id='contenuHelp' class='form-text text-muted'></small></form></div></div>";
-                cardBodyText = "<div class='card-body px-0 py-0'><form id='form' name='form' class='list-group-item'>" + titreHtml + contenu_textHtml;
-                const form = getElementById("form");
-                form.addEventListener("submit", (event) => {
-                    event.preventDefault();
-                    const postModified = {
-                        titre: document.getElementById("titre").value,
-                        contenu_text: document.getElementById("contenu_text").value
-                    }
-                    modifyOnePost(url, postModified)
-                        .then(response => {
-                            if (response.status === 200) {
-                                document.location.reload();
-                                console.log("Post modifié");
-                            }
-                            else {
-                                let errorInfo = document.getElementById("contenuHelp");
-                                errorInfo.textContent = response.error;
-                            } 
-                        }) 
-                        .catch((error) => {console.error(error, "Problème de communication avec l'API")});
-                })
-            })*/
