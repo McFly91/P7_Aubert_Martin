@@ -6,7 +6,6 @@ const postCtrl = require("../controllers/post");
 const likeCtrl = require("../controllers/like");
 const commentCtrl = require("../controllers/comment");
 
-
 router.post("/", auth, multer, postCtrl.createPost);
 
 router.put("/:id", auth, multer, postCtrl.modifyPost);

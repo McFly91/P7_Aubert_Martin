@@ -6,13 +6,12 @@ const cryptr = new Cryptr(process.env.CRYPTR_secret);
 const jwt = require("jsonwebtoken");
 
 let decryptedEmails = [];
+const emailRegex = /^[^\s@&"()!_$*€£`+=\/;?#<>A-Z0-9]*([a-z]){1,}([a-zA-Z0-9]){2,}\@(groupomania.com|groupomania.fr)/;
+const passwordRegex = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})/;
+const nameRegex = /^[^\s@&"()!_$*€£`+=\/;?#<>]*[A-Za-z]{2,}[^@&()!_$*€£`+=\/;?#<>]*$/;
 
 exports.signup = (req, res, next) => {
-    const emailRegex = /^[^\s@&"()!_$*€£`+=\/;?#<>A-Z0-9]*([a-z]){1,}([a-zA-Z0-9]){2,}\@(groupomania.com|groupomania.fr)/;
-    const passwordRegex = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})/;
-    const nameRegex = /^[^\s@&"()!_$*€£`+=\/;?#<>]*[A-Za-z]{2,}[^@&()!_$*€£`+=\/;?#<>]*$/;
-
-    userModel.encryptedEmailsSignup()
+    userModel.selectEncryptedEmail()
         .then(
             response => {
                 response.forEach((result => {
@@ -56,19 +55,18 @@ exports.signup = (req, res, next) => {
 };
 
 exports.login = (req, res, next) => {
-    userModel.encryptedEmailsLogin()
+    userModel.selectEncryptedEmailPassword()
         .then(
             response => {
                 response.forEach((result => {
                     let decryptedEmail = cryptr.decrypt(result.email);
                     decryptedEmails.push(decryptedEmail);
                 }));
-                for (let i = 0; i < response.length ; i++) {
+                for (let i = 0; i < response.length; i++) {
                     if(decryptedEmails[i].includes(req.body.email) === true) {
                         return bcrypt.compare(req.body.password, response[i].password)
                             .then(
                                 valid => {
-                                    console.log(decryptedEmails[i], req.body.password, response[i].password)
                                     if (!valid) {
                                         return res.status(401).json({ error : "Email ou mot de passe incorrect" });
                                     }
@@ -89,7 +87,78 @@ exports.login = (req, res, next) => {
                         return res.status(404).json({ error : "Email ou mot de passe incorrect" })
                     }
                 };
-            console.log(decryptedEmails);
         })
         .catch(() => { res.status(404).json({ message : "erreur" })})
+};
+
+exports.modifyUser = (req, res, next) => {
+    userModel.oneUser(res.locals.userId)
+        .then(
+            response => {
+                let decryptedResponses = []
+                response.forEach((result => {
+                    let decryptedResponse = {
+                        id: result.id,
+                        nom: cryptr.decrypt(result.nom),
+                        prenom: cryptr.decrypt(result.prenom),
+                        email: cryptr.decrypt(result.email),
+                    }
+                    decryptedResponses.push(decryptedResponse);
+                }));
+                userModel.selectEncryptedEmail()
+                    .then(
+                        responseEncryptedEmail => {
+                            responseEncryptedEmail.forEach((result => {
+                                let decryptedEmail = cryptr.decrypt(result.email);
+                                decryptedEmails.push(decryptedEmail);
+                            }));
+                            if ((decryptedEmails.includes(req.body.email) === false) || (req.body.email === decryptedResponses[0].email)) {
+                                if (res.locals.userId === decryptedResponses[0].id) {
+                                    if (nameRegex.test(req.body.nom) === true && nameRegex.test(req.body.prenom) === true && emailRegex.test(req.body.email) === true) {
+                                        userModel.modify(
+                                            cryptr.encrypt(req.body.nom), 
+                                            cryptr.encrypt(req.body.prenom),
+                                            cryptr.encrypt(req.body.email), 
+                                            MaskData.maskEmail2(req.body.email)
+                                        )
+                                            .then(() => res.status(200).json({ message : "Infos utilisateur modifiés"}))
+                                            .catch(error => res.status(500).json({ error }))
+                                    }
+                                    else if (nameRegex.test(req.body.nom) === false) {
+                                        return res.status(401).json({ error : "Nom incorrect !"})
+                                    }
+                                    else if (nameRegex.test(req.body.prenom) === false) {
+                                        return res.status(401).json({ error : "Prénom incorrect !"})
+                                    }
+                                    else if (emailRegex.test(req.body.email) === false) {
+                                        return res.status(401).json({ error : "Email incorrect !"})
+                                    }
+                                }
+                            }
+                            else {
+                                return res.status(400).json({ error : "Veuillez réessayer avec une autre adresse email"})
+                            };
+                    })
+                    .catch(error => res.status(500).json({ error }))
+        })
+        .catch(error => res.status(500).json({ error }))
+};
+
+exports.getOneUser = (req, res, next) => {
+    userModel.oneUser(res.locals.userId)
+        .then(
+            response => {
+                let decryptedResponses = []
+                response.forEach((result => {
+                    let decryptedResponse = {
+                        id: result.id,
+                        nom: cryptr.decrypt(result.nom),
+                        prenom: cryptr.decrypt(result.prenom),
+                        email: cryptr.decrypt(result.email),
+                    }
+                    decryptedResponses.push(decryptedResponse);
+                }));
+                res.status(200).json(decryptedResponses);
+            })
+        .catch(error => res.status(500).json({ error }))
 };

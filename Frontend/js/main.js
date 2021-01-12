@@ -1,3 +1,4 @@
+// POSTS //
 const newPostWithoutMedia = async (url, data) => {
     try {
         let response = await fetch(url, {
@@ -160,23 +161,9 @@ const deleteOnePost = async (url) => {
         console.log(error);
     };
 };
+// POSTS //
 
-const dateCalcul = (date_creation) => {
-    let dateNow = Date.now();
-    let dateCreation = Date.parse(date_creation);
-    let dateDiff = dateNow - dateCreation;
-    let date;
-    if (dateDiff > (60000*60) && dateDiff < (60000*60*24)) {
-        return date = "Il y a " + Math.round(dateDiff / (60000*60)) + " Heures";
-    }
-    else if (dateDiff < (60000*60)) {
-        return date = "Il y a " + Math.round(dateDiff / 60000) + " Minutes";
-    }
-    else {
-        return date = "Il y a " + Math.round(dateDiff / (60000*60*24)) + " Jours"
-    };
-};
-
+// COMMENTAIRES //
 const newComment = async (url, data) => {
     try {
         let response = await fetch(url, {
@@ -269,7 +256,9 @@ const deleteOneComment = async (url) => {
         console.log(error);
     };
 };
+// COMMENTAIRES //
 
+// LIKES / DISLIKES //
 const addLikeDislike = async (url, data) => {
     try {
         let response = await fetch(url, {
@@ -314,5 +303,22 @@ const allLikeDislike = async (url) => {
     }
     catch (error) {
         console.error(error);
+    };
+};
+// LIKES / DISLIKES //
+
+const dateCalcul = (date_creation) => {
+    let dateNow = Date.now();
+    let dateCreation = Date.parse(date_creation);
+    let dateDiff = dateNow - dateCreation;
+    let date;
+    if (dateDiff > (60000*60) && dateDiff < (60000*60*24)) {
+        return date = "Il y a " + Math.round(dateDiff / (60000*60)) + " Heures";
+    }
+    else if (dateDiff < (60000*60)) {
+        return date = "Il y a " + Math.round(dateDiff / 60000) + " Minutes";
+    }
+    else {
+        return date = "Il y a " + Math.round(dateDiff / (60000*60*24)) + " Jours"
     };
 };

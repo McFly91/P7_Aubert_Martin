@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="Page d'afichage pour l'utilisateur Groupomania">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link href="./css/all.css" rel="stylesheet">
+
+  <title>Groupomania - Profil</title>
+</head>
+
+<body>
+
+    <header>
+       <div class="container-fluid px-0">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
+            <h1 class="navbar-brand w-25">
+                <img src="./images/icon_user.png" class="img-fluid w-25" alt="Logo de la société">
+            </h1>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                  <li class="nav-item active">
+                    <a class="nav-link fas fa-arrow-left" href="user_page.html"></a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="index.html">Deconnexion</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="help.html" class="nav-link">Help</a>
+                  </li>
+                  <li class="nav-item">
+                      <a href="support.html" class="nav-link">Support</a>
+                  </li>
+                </ul>
+            </div>
+        </nav>
+       </div>
+    </header>
+
+    <section class="container">
+        <div class="row">
+           <div class="col">
+              <form id="form" name="form">
+                <div class="d-flex justify-content-center">
+                  <img alt="Avatar" class="img-fluid w-25" id="avatar">
+                </div>
+                 <div class="form-group">
+                    <label for="nom">Nom</label>
+                    <input type="text" class="form-control" id="nom">
+                    <small id="nomHelp" class="form-text"></small>
+                 </div>
+                 <div class="form-group">
+                    <label for="prenom">Prénom</label>
+                    <input type="text" class="form-control" id="prenom">
+                    <small id="prenomHelp" class="form-text"></small>
+                 </div>
+                 <div class="form-group">
+                   <label for="email">Adresse Email</label>
+                   <input type="email" class="form-control" id="email" placeholder="Adresse Email">
+                   <small id="emailHelp" class="form-text text-muted">Veuillez rentrer une adresse email valide</small>
+                 </div>
+              </form>
+              <form id="form_password" name="form">
+                <div class="form-group">
+                  <label for="password">Modifier mot de passe</label>
+                  <input type="password" class="form-control" id="password" placeholder="Rentrer votre nouveau mot de passe">
+                  <small id="passwordHelp" class="form-text text-muted">Entrez un mot de passe comprenant au moins 1 Majuscule, 1 chiffre et 1 caractère spécial</small>
+               </div>
+                <div class="form-group">
+                  <label for="password_confirm">Confirmer Mot de passe</label>
+                  <input type="password" class="form-control" id="password_confirm" placeholder="Confirmer votre nouveau mot de passe">
+                  <small id="passwordHelp_confirm" class="form-text text-muted">Veuillez retaper votre nouveau mot de passe à l'identique</small>
+                </div>
+              </form>
+              <div class="col d-flex justify-content-around my-1">
+                <input type="submit" class="btn btn-primary" id="form_submit" value="Valider">
+                <a href="index.html" class="btn btn-info">Retour Accueil</a>
+              </div>
+           </div>
+        </div>
+      </section>
+  
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="./js/profil.js"></script>
+
+</body>
+
+</html>

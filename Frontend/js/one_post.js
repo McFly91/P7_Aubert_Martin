@@ -83,7 +83,6 @@ onePost(url)
                         titre: document.getElementById("modify_titre").value,
                         contenu_text: document.getElementById("modify_contenu_text").value
                     }
-                    console.log(postModified);
                     // Modification d'un Post avec image
                     if (image[0] !== undefined) {
                         const data = new FormData();
@@ -169,7 +168,7 @@ onePost(url)
 
                     // DEBUT SECTION Modification et Suppression d'un Commentaire //
                     if (comment.user_id == userId) {
-                        // Modification d'un Post
+                        // Modification d'un Commentaire
                         const modifyCommentButton = document.getElementById("modify_comment_" + comment.id);
                         modifyCommentButton.addEventListener("click", () => {
                             commentPostHtml = "<div class='form-group d-flex'><textarea class='form-control' id='modify_contenu_comment_" + comment.id + "' rows='1'>" + comment.comment_post + "</textarea>";
@@ -177,7 +176,7 @@ onePost(url)
                             let cardModifyComment = "<div class='card-body px-0 py-0'><form id='modify_form_comment_" + comment.id + "' name='form' class='list-group-item bg-light'>" + commentPostHtml;
                             let modifySubmit = "<div class='mx-1'><input type='submit' class='btn btn-primary' value='Publier'></div></form>";
 
-                            li.innerHTML = modifyDeletePostHtml + "<div class='card'>" + cardHeaderComment + cardModifyComment + textInfo + modifySubmit + "</div>";
+                            li.innerHTML = modifyDeleteCommentHtml + "<div class='card'>" + cardHeaderComment + cardModifyComment + textInfo + modifySubmit + "</div>";
 
                             const modifyFormComment = document.getElementById("modify_form_comment_" + comment.id);
                             modifyFormComment.addEventListener("submit", (event) => {
