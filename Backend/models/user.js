@@ -60,6 +60,24 @@ exports.modify = (nom, prenom, email, email_mask, user_id) => {
     };
 };
 
+exports.delete = (user_id) => {
+    try {
+        return new Promise((resolve, reject) => {
+            connectionDB.query("DELETE FROM User WHERE id = ?;", [user_id], (error, results) => {
+                if (results === undefined) {
+                    reject ("Erreur dans la requête");
+                }
+                else {
+                    resolve (results);
+                }
+            });
+        });
+    }
+    catch (error) {
+        console.log(error);
+    };
+};
+
 exports.oneUser = (user_id) => {
     try {
         return new Promise((resolve) => {

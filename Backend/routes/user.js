@@ -16,6 +16,8 @@ router.post("/login", apiLimiter, userCtrl.login);
 
 router.put("/profil", auth, userCtrl.modifyUser);
 
+router.delete("/profil", auth, userCtrl.deleteUser);
+
 router.get("/profil", auth, userCtrl.getOneUser);
 
 module.exports = router;

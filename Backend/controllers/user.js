@@ -88,7 +88,7 @@ exports.login = (req, res, next) => {
                     }
                 };
         })
-        .catch(() => { res.status(404).json({ message : "erreur" })})
+        .catch((error) => {res.status(404).json({ error })})
 };
 
 exports.modifyUser = (req, res, next) => {
@@ -119,7 +119,8 @@ exports.modifyUser = (req, res, next) => {
                                             cryptr.encrypt(req.body.nom), 
                                             cryptr.encrypt(req.body.prenom),
                                             cryptr.encrypt(req.body.email), 
-                                            MaskData.maskEmail2(req.body.email)
+                                            MaskData.maskEmail2(req.body.email),
+                                            res.locals.userId
                                         )
                                             .then(() => res.status(200).json({ message : "Infos utilisateur modifiés"}))
                                             .catch(error => res.status(500).json({ error }))
@@ -139,9 +140,24 @@ exports.modifyUser = (req, res, next) => {
                                 return res.status(400).json({ error : "Veuillez réessayer avec une autre adresse email"})
                             };
                     })
-                    .catch(error => res.status(500).json({ error }))
+                    .catch((error) => {res.status(404).json({ error })})
         })
         .catch(error => res.status(500).json({ error }))
+};
+
+exports.deleteUser = (req, res, next) => {
+    userModel.oneUser(res.locals.userId)
+        .then(
+            response => {
+                if (response[0].id === res.locals.userId || res.locals.role === "admin") {
+                    userModel.delete(res.locals.userId)
+                        .then(() => res.status(200).json({ message : "Utilisateur supprimé"}))
+                        .catch(error => res.status(500).json({ error }))
+                }
+            })
+        .catch(error => res.status(500).json({ error }))
+    
+
 };
 
 exports.getOneUser = (req, res, next) => {

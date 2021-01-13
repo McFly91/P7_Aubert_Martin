@@ -312,13 +312,25 @@ const dateCalcul = (date_creation) => {
     let dateCreation = Date.parse(date_creation);
     let dateDiff = dateNow - dateCreation;
     let date;
-    if (dateDiff > (60000*60) && dateDiff < (60000*60*24)) {
-        return date = "Il y a " + Math.round(dateDiff / (60000*60)) + " Heures";
+    if (dateDiff < (60000*1)) {
+        return date = "Il y a moins d'une minute";
     }
-    else if (dateDiff < (60000*60)) {
-        return date = "Il y a " + Math.round(dateDiff / 60000) + " Minutes";
+    else if (dateDiff > (60000*1) && dateDiff < (60000*2)) {
+        return date = "Il y a 1 minute";
+    }
+    else if (dateDiff > (60000*2) && dateDiff < (60000*60)) {
+        return date = "Il y a " + Math.round(dateDiff / 60000) + " minutes";
+    }
+    else if (dateDiff > (60000*60) && dateDiff < (60000*60*2)) {
+        return date = "Il y a 1 heure";
+    }
+    else if (dateDiff > (60000*60*2) && dateDiff < (60000*60*24)) {
+        return date = "Il y a " + Math.round(dateDiff / (60000*60)) + " heures";
+    }
+    else if (dateDiff > (60000*60*24) && dateDiff < (60000*60*24*2)) {
+        return date = "Il y a 1 jour"
     }
     else {
-        return date = "Il y a " + Math.round(dateDiff / (60000*60*24)) + " Jours"
+        return date = "Il y a " + Math.round(dateDiff / (60000*60*24*2)) + " jours"
     };
 };
