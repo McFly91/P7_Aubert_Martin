@@ -42,10 +42,28 @@ exports.selectEncryptedEmailPassword = () => {
     };
 };
 
-exports.modify = (nom, prenom, email, email_mask, user_id) => {
+exports.modifyInfos = (nom, prenom, email, email_mask, user_id) => {
     try {
         return new Promise((resolve) => {
             connectionDB.query("UPDATE User SET nom = ?, prenom = ?, email = ?, email_mask = ? WHERE id = ?;", [nom, prenom, email, email_mask, user_id], (error, results) => {
+                if (results === undefined) {
+                    resolve (error = "Erreur dans la requête");
+                }
+                else {
+                    resolve (results);
+                }
+            });
+        });
+    }
+    catch (error) {
+        console.log(error);
+    };
+};
+
+exports.modifyPassword = (password, user_id) => {
+    try {
+        return new Promise((resolve) => {
+            connectionDB.query("UPDATE User SET password = ? WHERE id = ?;", [password, user_id], (error, results) => {
                 if (results === undefined) {
                     resolve (error = "Erreur dans la requête");
                 }

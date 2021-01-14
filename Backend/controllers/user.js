@@ -91,7 +91,7 @@ exports.login = (req, res, next) => {
         .catch((error) => {res.status(404).json({ error })})
 };
 
-exports.modifyUser = (req, res, next) => {
+exports.modifyUserInfos = (req, res, next) => {
     userModel.oneUser(res.locals.userId)
         .then(
             response => {
@@ -101,7 +101,7 @@ exports.modifyUser = (req, res, next) => {
                         id: result.id,
                         nom: cryptr.decrypt(result.nom),
                         prenom: cryptr.decrypt(result.prenom),
-                        email: cryptr.decrypt(result.email),
+                        email: cryptr.decrypt(result.email)
                     }
                     decryptedResponses.push(decryptedResponse);
                 }));
@@ -115,7 +115,7 @@ exports.modifyUser = (req, res, next) => {
                             if ((decryptedEmails.includes(req.body.email) === false) || (req.body.email === decryptedResponses[0].email)) {
                                 if (res.locals.userId === decryptedResponses[0].id) {
                                     if (nameRegex.test(req.body.nom) === true && nameRegex.test(req.body.prenom) === true && emailRegex.test(req.body.email) === true) {
-                                        userModel.modify(
+                                        userModel.modifyInfos(
                                             cryptr.encrypt(req.body.nom), 
                                             cryptr.encrypt(req.body.prenom),
                                             cryptr.encrypt(req.body.email), 
@@ -145,6 +145,29 @@ exports.modifyUser = (req, res, next) => {
         .catch(error => res.status(500).json({ error }))
 };
 
+exports.modifyUserPassword = (req, res, next) => {
+    userModel.oneUser(res.locals.userId)
+        .then(
+            response => {
+                if (res.locals.userId === response[0].id) {
+                    if (passwordRegex.test(req.body.password) === true) {
+                        bcrypt.hash(req.body.password, 10)
+                            .then(
+                                hash => {
+                                    userModel.modifyPassword(hash, res.locals.userId)
+                                        .then(() => res.status(200).json({ message : "Mot de passe modifié"}))
+                                        .catch(error => res.status(500).json({ error }))
+                            })
+                            .catch(error => res.status(500).json({ error }))
+                    }
+                    else {
+                        return res.status(401).json({ error : "Veuillez entrer un mot de passe contenant au moins 6 caractères dont 1 majuscule, 1 minuscule, 1 chiffre et 1 des caractères spéciaux !"})
+                    }
+                };
+        })
+    .catch((error) => {res.status(404).json({ error })})
+};
+
 exports.deleteUser = (req, res, next) => {
     userModel.oneUser(res.locals.userId)
         .then(
@@ -156,8 +179,6 @@ exports.deleteUser = (req, res, next) => {
                 }
             })
         .catch(error => res.status(500).json({ error }))
-    
-
 };
 
 exports.getOneUser = (req, res, next) => {

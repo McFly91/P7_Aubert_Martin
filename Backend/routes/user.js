@@ -14,9 +14,11 @@ router.post("/signup", userCtrl.signup);
 
 router.post("/login", apiLimiter, userCtrl.login);
 
-router.put("/profil", auth, userCtrl.modifyUser);
+router.put("/modify_infos", auth, userCtrl.modifyUserInfos);
 
-router.delete("/profil", auth, userCtrl.deleteUser);
+router.put("/modify_password", auth, userCtrl.modifyUserPassword);
+
+router.delete("/delete", auth, userCtrl.deleteUser);
 
 router.get("/profil", auth, userCtrl.getOneUser);
 

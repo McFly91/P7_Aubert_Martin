@@ -96,7 +96,7 @@ onePost(url)
                                 }
                                 else {
                                     let errorInfo = document.getElementById("modify_contenuHelp");
-                                    errorInfo.textContent = response.error;
+                                    errorInfo.textContent = esponseModifyPost.error;
                                 } 
                             })
                             .catch((error) => {console.error(error, "Problème de communication avec l'API")});
