@@ -36,5 +36,4 @@ form.addEventListener("submit", (event) => {
     else {
         errorInput(passwordConfirm, passwordConfirmError, "Votre mot de passe doit être identique");
     }
-
 });

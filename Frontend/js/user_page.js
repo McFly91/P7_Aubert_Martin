@@ -3,11 +3,17 @@ const form = document.getElementById("form");
 // DEBUT SECTION ajout d'un POST
 form.addEventListener("submit", (event) => {
     event.preventDefault();
-    const image = document.getElementById("contenu_media").files;
-    const post = {
-        titre: document.getElementById("titre").value,
-        contenu_text: document.getElementById("contenu_text").value
+    let image = document.getElementById("contenu_media").files;
+    const titre = document.getElementById("titre");
+    const contenu = document.getElementById("contenu");
+    const contenuText = document.getElementById("contenu_text");
+    const titreError = document.getElementById("titreHelp");
+    const contenuError = document.getElementById("contenuHelp");
+    let post = {
+        titre: titre.value,
+        contenu_text: contenuText.value
     };
+
     // Ajout d'un Post avec image
     if (image[0] !== undefined) {
         const data = new FormData();
@@ -19,25 +25,23 @@ form.addEventListener("submit", (event) => {
                     document.location.reload();
                 }
                 else {
-                    let errorInfo = document.getElementById("contenuHelp");
-                    errorInfo.textContent = response.error;
+                    errorInfosMedia(titre, contenuText, contenu, image[0], titreError, contenuError, "Un titre doit être indiqué et il ne doit pas commencer par un caractère spécial", "Un contenu doit être entré (texte ou media) et il ne doit pas commencer par un caractère spécial");
                 } 
             })
             .catch((error) => {console.error(error, "Problème de communication avec l'API")});
     }
     // Ajout d'un Post sans image
     else {
-    newPostWithoutMedia("http://localhost:3000/api/post/", post)
-        .then(response => {
-            if (response.status === 201) {
-                document.location.reload();
-            }
-            else {
-                let errorInfo = document.getElementById("contenuHelp");
-                errorInfo.textContent = response.error;
-            } 
-        })
-        .catch((error) => {console.error(error, "Problème de communication avec l'API")}); 
+        newPostWithoutMedia("http://localhost:3000/api/post/", post)
+            .then(response => {
+                if (response.status === 201) {
+                    document.location.reload();
+                }
+                else {
+                    errorInfos(titre, contenuText, titreError, contenuError, "Un titre doit être indiqué et il ne doit pas commencer par un caractère spécial", "Un contenu doit être entré (texte ou media) et il ne doit pas commencer par un caractère spécial");
+                } 
+            })
+            .catch((error) => {console.error(error, "Problème de communication avec l'API")}); 
     }
 });
 // FIN SECTION ajout d'un POST
@@ -120,7 +124,7 @@ allPost("http://localhost:3000/api/post/")
                             li.classList.add("list-group-item", "bg-light", "py-0");
                             document.querySelector(".all_comment").prepend(li);
                             let commentFormHtml = "<textarea class='form-control' id='comment' rows='1' placeholder='Nouveau commentaire...'></textarea>";
-                            let textInfo = "<small id='commentHelp' class='form-text text-muted'></small>"
+                            let textInfo = "<small id='commentHelp' class='form-text'></small>"
                             let submit = "<input type='submit' class='btn btn-primary mx-1' id='form_submit' value='Publier'>";
                             li.innerHTML = "<form id='form_" + post.id + "' name='form' class='list-group-item bg-light py-1 px-0'><div class='form-group d-flex'>" + commentFormHtml + textInfo + submit + "</div></form>";
                             // Creation d'un nouveau commentaire
@@ -137,8 +141,7 @@ allPost("http://localhost:3000/api/post/")
                                         console.log("Commentaire ajouté");
                                     }
                                     else {
-                                        let errorInfo = document.getElementById("commentHelp");
-                                        errorInfo.textContent = responseNewComment.error;
+                                        //errorInput()
                                     }
                                 })
                                 .catch((error) => {console.error(error, "Problème de communication avec l'API")});
@@ -197,3 +200,6 @@ allPost("http://localhost:3000/api/post/")
     })
     .catch((error) => {console.error(error, "Problème de communication avec l'API")});
 // FIN SECTION Affichage de l'ensemble des Posts //
+
+// Déconnexion
+logout();

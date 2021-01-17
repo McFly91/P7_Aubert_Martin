@@ -75,3 +75,11 @@ document.getElementById("delete").addEventListener("click", () => {
             .catch((error) => {console.error(error, "Problème de communication avec l'API")})
     }
 });
+
+// Déconnexion
+const logout = () => {
+    document.getElementById("logout").addEventListener("click", () => {
+        sessionStorage.clear();
+    });
+};
+logout();

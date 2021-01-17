@@ -1,5 +1,5 @@
-let idUrl = new URLSearchParams(document.location.search);
-let url = "http://localhost:3000/api/post/" + idUrl.get("id");
+const idUrl = new URLSearchParams(document.location.search);
+const url = "http://localhost:3000/api/post/" + idUrl.get("id");
 const userId = sessionStorage.getItem("userId");
 const role = sessionStorage.getItem("role");
 
@@ -83,6 +83,7 @@ onePost(url)
                         titre: document.getElementById("modify_titre").value,
                         contenu_text: document.getElementById("modify_contenu_text").value
                     }
+                    console.log(image[0], postModified)
                     // Modification d'un Post avec image
                     if (image[0] !== undefined) {
                         const data = new FormData();
@@ -96,7 +97,7 @@ onePost(url)
                                 }
                                 else {
                                     let errorInfo = document.getElementById("modify_contenuHelp");
-                                    errorInfo.textContent = esponseModifyPost.error;
+                                    errorInfo.textContent = responseModifyPost.error;
                                 } 
                             })
                             .catch((error) => {console.error(error, "Problème de communication avec l'API")});
@@ -111,7 +112,7 @@ onePost(url)
                                 }
                                 else {
                                     let errorInfo = document.getElementById("modify_contenuHelp");
-                                    errorInfo.textContent = response.error;
+                                    errorInfo.textContent = responseModifyPost.error;
                                 } 
                             })
                             .catch((error) => {console.error(error, "Problème de communication avec l'API")}); 
@@ -293,3 +294,6 @@ onePost(url)
     })
     .catch((error) => {console.error(error, "Problème de communication avec l'API")});
 // FIN SECTION Affichage d'un Post //
+
+// Déconnexion
+logout();

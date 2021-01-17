@@ -37,7 +37,7 @@ exports.modify = (titre, contenu_text, contenu_media, id) => {
     catch (error) {
         console.log(error);
     };
-};
+}
 
 exports.delete = (id) => {
     try {

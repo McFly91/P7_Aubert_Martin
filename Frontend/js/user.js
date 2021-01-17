@@ -5,12 +5,6 @@ const emailError = document.getElementById("emailHelp");
 const passwordError = document.getElementById("passwordHelp");
 // VARIABLES COMMUNES //
 
-// REGEX //
-const emailRegex = /^[^\s@&"()!_$*€£`+=\/;?#<>A-Z0-9]*([a-z]){1,}([a-zA-Z0-9]){2,}\@(groupomania.com|groupomania.fr)/;
-const passwordRegex = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})/;
-const nameRegex = /^[^\s@&"()!_$*€£`+=\/;?#<>]*[A-Za-z]{2,}[^@&()!_$*€£`+=\/;?#<>]*$/;
-// REGEX //
-
 // USER //
 const createUser = async (url, data) => {
     try {
@@ -152,6 +146,10 @@ const deleteUser = async (url) => {
 // USER //
 
 // ERREURS DANS LES ENTREES //
+const emailRegex = /^[^\s@&"()!_$*€£`+=\/;?#<>A-Z0-9]*([a-z]){1,}([a-zA-Z0-9]){2,}\@(groupomania.com|groupomania.fr)/;
+const passwordRegex = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})/;
+const nameRegex = /^[^\s@&"()!_$*€£`+=\/;?#<>]*[A-Za-z]{2,}[^@&()!_$*€£`+=\/;?#<>]*$/;
+
 const errorInput = (input, error, text) => {
     input.classList.add("is-invalid");
     error.classList.add("text-danger");
@@ -190,17 +188,4 @@ const errorInfos = (nom, prenom, email, nomError, prenomError, emailError, textN
         errorInput(email, emailError, textEmailError);
     }
 }
-
-const errorPassword = (password, passwordConfirm, passwordError, passwordConfirmError, textPasswordError, textPasswordConfirmError) => {
-    if (passwordRegex.test(password.value) === false && (passwordConfirm.value !== password.value)) {
-        errorInput(password, passwordError, textPasswordError);
-        errorInput(passwordConfirm, passwordConfirmError, textPasswordConfirmError);
-    }
-    else if (passwordRegex.test(password.value) === false) {
-        errorInput(password, passwordError, textPasswordError);
-    }
-    else if (passwordConfirm.value !== password.value) {
-        errorInput(passwordConfirm, passwordConfirmError, textPasswordConfirmError);
-    }
-};
 // ERREURS DANS LES ENTREES //

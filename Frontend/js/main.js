@@ -307,6 +307,67 @@ const allLikeDislike = async (url) => {
 };
 // LIKES / DISLIKES //
 
+// ERREURS DANS LES ENTREES //
+const inputRegex = /^[^\s@&"()!_$*€£`+=\/;?#<>]*[A-Za-z0-9]{1,}/;
+
+const errorInput = (input, error, text) => {
+    input.classList.add("is-invalid");
+    error.classList.add("text-danger");
+    error.textContent = text;
+    input.addEventListener("keyup", () => {
+        input.classList.remove("is-invalid");
+        error.textContent = "";
+    })
+};
+
+const errorInputMedia = (input, inputText, error, text) => {
+    input.classList.add("is-invalid");
+    error.classList.add("text-danger");
+    error.textContent = text;
+    input.addEventListener("change", () => {
+        inputText.classList.remove("is-invalid");
+        error.textContent = "";
+    })
+};
+
+const errorInfosMedia = (titre, contenuText, contenu, image, titreError, contenuError, textTitreError, textContenuError) => {
+    if ((inputRegex.test(titre.value) === false) && ((contenuText.value === "") && (image === undefined))) {
+        errorInput(titre, titreError, textTitreError);
+        errorInput(contenuText, contenuError, textContenuError);
+        errorInputMedia(contenu, contenuText, contenuError, textContenuError);
+    }
+    else if ((inputRegex.test(titre.value) === false) && (((contenuText.value !== "") && (inputRegex.test(contenuText.value) === false)) && (image === undefined))) {
+        errorInput(titre, titreError, textTitreError);
+        errorInput(contenuText, contenuError, textContenuError);
+        errorInputMedia(contenu, contenuText, contenuError, textContenuError);
+    }
+    else if (((contenuText.value !== "") && (inputRegex.test(contenuText.value) === false)) && (image === undefined)) {
+        errorInput(contenuText, contenuError, textContenuError);
+        errorInputMedia(contenu, contenuText, contenuError, textContenuError);
+    }
+    else if ((contenuText.value === "") && (image === undefined)) {
+        errorInputMedia(contenu, contenuText, contenuError, textContenuError);
+    }
+    else if (inputRegex.test(titre.value) === false) {
+        errorInput(titre, titreError, textTitreError);
+    }
+}
+
+const errorInfos = (titre, contenu, titreError, contenuError, textTitreError, textContenuError) => {
+    if ((inputRegex.test(titre.value) === false) && (inputRegex.test(contenu.value) === false)) {
+        errorInput(titre, titreError, textTitreError);
+        errorInput(contenu, contenuError, textContenuError);
+    }
+    else if (inputRegex.test(contenu.value) === false) {
+        errorInput(contenu, contenuError, textContenuError);
+    }
+    else if (inputRegex.test(titre.value) === false) {
+        errorInput(titre, titreError, textTitreError);
+    }
+}
+// ERREURS DANS LES ENTREES //
+
+// CALCUL TEMPS DEPUIS CREATION //
 const dateCalcul = (date_creation) => {
     let dateNow = Date.now();
     let dateCreation = Date.parse(date_creation);
@@ -334,3 +395,12 @@ const dateCalcul = (date_creation) => {
         return date = "Il y a " + Math.round(dateDiff / (60000*60*24*2)) + " jours"
     };
 };
+// CALCUL TEMPS DEPUIS CREATION //
+
+// DECONNEXION //
+const logout = () => {
+    document.getElementById("logout").addEventListener("click", () => {
+        sessionStorage.clear();
+    });
+};
+// DECONNEXION //

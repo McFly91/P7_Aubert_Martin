@@ -12,10 +12,10 @@ exports.createPost = (req, res, next) => {
     if (req.file) {
         filename = req.file.filename;
         postObject = JSON.parse(req.body.post);
-            postObject.contenu_media = `${req.protocol}://${req.get("host")}/images/${filename}`;
+        postObject.contenu_media = `${req.protocol}://${req.get("host")}/images/${filename}`;
     }
     console.log(postObject);
-    if (inputRegex.test(postObject.titre) && (postObject.contenu_text === "" || (postObject.contenu_text !== "" && inputRegex.test(postObject.contenu_text)))) {
+    if (inputRegex.test(postObject.titre) && (((postObject.contenu_text === "") && (req.file)) || ((postObject.contenu_text !== "") && (inputRegex.test(postObject.contenu_text))))) {
         postModel.postSchema(
             postObject.titre, 
             postObject.contenu_text, 
@@ -42,8 +42,8 @@ exports.modifyPost = (req, res, next) => {
                             ...JSON.parse(req.body.post),
                             contenu_media : `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
                         }  : { ...req.body };
-                    if (inputRegex.test(postObject.titre) && (postObject.contenu_text === "" || (postObject.contenu_text !== "" && inputRegex.test(postObject.contenu_text)))) {
-                        if (req.file) {
+                    if ((inputRegex.test(postObject.titre)) && (((postObject.contenu_text === "") && (postObject.contenu_media !== undefined)) || ((postObject.contenu_text !== "") && (inputRegex.test(postObject.contenu_text))))) {
+                        if (response[0].contenu_media !== null) {
                             const filename = response[0].contenu_media.split("/images/")[1];
                             fs.unlink(`images/${filename}`, () => {
                                 console.log("Ancienne image remplacée");
