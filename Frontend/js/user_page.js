@@ -58,7 +58,7 @@ allPost("http://localhost:3000/api/post/")
             li.classList.add("list-group-item", "bg-light");
             document.querySelector(".all_posts").prepend(li);
             let cardLink = "<a class=stretched-link' href='one_post.html?id=" + post.id + "' style='text-decoration:none'>";
-            let userHtml = "<h6>" + post.prenom + " " + post.nom + "</h6>";
+            let userHtml = "<div class='d-flex'><img src=" + post.avatar + " alt='Avatar de profil' class='w-25'><h6>"+ post.prenom + " " + post.nom + "</h6></div>";
             let datePostHtml = "<p class='font-italic'>" + dateCalcul(post.date_post) + "</p>";
             let titreHtml = "<h5 class='card-title font-weight-bold text-dark'>" + post.titre + "</h5>";
             let contenu_textHtml = "<p class='card-text text-dark'>" + post.contenu_text + "</p>";

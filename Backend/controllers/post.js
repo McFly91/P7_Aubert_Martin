@@ -105,7 +105,8 @@ exports.getOnePost = (req, res, next) => {
                     post_id: result.post_id,
                     role: result.role,
                     nom: cryptr.decrypt(result.nom),
-                    prenom: cryptr.decrypt(result.prenom)
+                    prenom: cryptr.decrypt(result.prenom),
+                    avatar: result.avatar
                 }
                 decryptedResponses.push(decryptedResponse);
             }));
@@ -128,7 +129,8 @@ exports.getAllPosts = (req, res, next) => {
                     user_id: result.user_id,
                     post_id: result.post_id,
                     nom: cryptr.decrypt(result.nom),
-                    prenom: cryptr.decrypt(result.prenom)
+                    prenom: cryptr.decrypt(result.prenom),
+                    avatar: result.avatar
                 }
                 decryptedResponses.push(decryptedResponse);
             }));

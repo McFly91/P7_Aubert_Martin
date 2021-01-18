@@ -1,4 +1,5 @@
 const userModel = require("../models/user");
+const fs = require("fs");
 const MaskData = require('maskdata');
 const bcrypt = require('bcrypt');
 const Cryptr = require('cryptr');
@@ -6,9 +7,21 @@ const cryptr = new Cryptr(process.env.CRYPTR_secret);
 const jwt = require("jsonwebtoken");
 
 let decryptedEmails = [];
+let avatarsList = [];
 const emailRegex = /^[^\s@&"()!_$*€£`+=\/;?#<>A-Z0-9]*([a-z]){1,}([a-zA-Z0-9]){2,}\@(groupomania.com|groupomania.fr)/;
 const passwordRegex = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})/;
 const nameRegex = /^[^\s@&"()!_$*€£`+=\/;?#<>]*[A-Za-z]{2,}[^@&()!_$*€£`+=\/;?#<>]*$/;
+
+exports.avatars = (req, res, next) => {
+    fs.readdir("../Backend/images/avatars", (error, files) => {
+        if (error) throw error;
+        files.forEach(file => {
+            avatarsList.push(file);
+            avatarsList = Array.from(new Set(avatarsList));
+        })
+        res.status(200).json(avatarsList); 
+    });
+};
 
 exports.signup = (req, res, next) => {
     userModel.selectEncryptedEmail()
@@ -18,6 +31,9 @@ exports.signup = (req, res, next) => {
                     let decryptedEmail = cryptr.decrypt(result.email);
                     decryptedEmails.push(decryptedEmail);
                 }));
+                
+               //let avatar = `${req.protocol}://${req.get("host")}/images/avatars/${req.body.avatar}`;
+
                 if (decryptedEmails.includes(req.body.email) === false) {
                     if (nameRegex.test(req.body.nom) === true && nameRegex.test(req.body.prenom) === true && emailRegex.test(req.body.email) === true && passwordRegex.test(req.body.password) === true) {
                         bcrypt.hash(req.body.password, 10)
@@ -28,7 +44,8 @@ exports.signup = (req, res, next) => {
                                                     cryptr.encrypt(req.body.prenom),
                                                     cryptr.encrypt(req.body.email), 
                                                     MaskData.maskEmail2(req.body.email), 
-                                                    hash);
+                                                    hash,
+                                                    `${req.protocol}://${req.get("host")}/images/avatars/${req.body.avatar}`);
                         
                                                 res.status(201).json({ message : "Utilisateur créé"});
                                         })
@@ -192,6 +209,7 @@ exports.getOneUser = (req, res, next) => {
                         nom: cryptr.decrypt(result.nom),
                         prenom: cryptr.decrypt(result.prenom),
                         email: cryptr.decrypt(result.email),
+                        avatar: result.avatar
                     }
                     decryptedResponses.push(decryptedResponse);
                 }));

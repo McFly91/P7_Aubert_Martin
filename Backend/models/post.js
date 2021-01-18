@@ -60,7 +60,7 @@ exports.delete = (id) => {
 exports.onePost = (id) => {
     try {
         return new Promise((resolve, reject) => {
-            connectionDB.query("SELECT Post.id, Post.titre, Post.contenu_text, Post.contenu_media, Post.date_post, Post.user_id, User.prenom, User.nom, User.role FROM Post INNER JOIN User ON Post.user_id = User.id WHERE Post.id = ?;", [id], (error, results) => {
+            connectionDB.query("SELECT Post.id, Post.titre, Post.contenu_text, Post.contenu_media, Post.date_post, Post.user_id, User.prenom, User.nom, User.role, User.avatar FROM Post INNER JOIN User ON Post.user_id = User.id WHERE Post.id = ?;", [id], (error, results) => {
                 if (results === undefined) {
                     reject ("Erreur dans la requête");
                 }
@@ -79,7 +79,7 @@ exports.onePost = (id) => {
 exports.allPost = () => {
     try {
         return new Promise((resolve, reject) => {
-            connectionDB.query("SELECT Post.id, Post.titre, Post.contenu_text, Post.contenu_media, Post.date_post, Post.user_id, User.prenom, User.nom FROM Post INNER JOIN User ON Post.user_id = User.id;", (error, results) => {
+            connectionDB.query("SELECT Post.id, Post.titre, Post.contenu_text, Post.contenu_media, Post.date_post, Post.user_id, User.prenom, User.nom, User.avatar FROM Post INNER JOIN User ON Post.user_id = User.id;", (error, results) => {
                 if (results === undefined) {
                     reject ("Erreur dans la requête");
                 }

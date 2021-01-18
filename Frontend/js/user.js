@@ -29,6 +29,27 @@ const createUser = async (url, data) => {
     }
 };
 
+const chooseAvatar = async (url) => {
+    try {
+        let response = await fetch(url, {
+            method:"GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+        let responseJson = await response.json();
+        if (response.status === 200) {
+            return responseJson
+        }
+        else {
+            throw error
+        }
+    }
+    catch (error) {
+        console.error(error);
+    };
+};
+
 const loginUser = async (url, data) => {
     try {
         let response = await fetch(url, {

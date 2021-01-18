@@ -1,7 +1,7 @@
 const connectionDB = require("../connexion_mysql");
 
-exports.userSchema = (nom, prenom, email, email_mask, password) => { 
-    connectionDB.query("INSERT INTO User (nom, prenom, email, email_mask, password) VALUES (?, ?, ?, ?, ?);", [nom, prenom, email, email_mask, password], (error, results) => {
+exports.userSchema = (nom, prenom, email, email_mask, password, avatar) => { 
+    connectionDB.query("INSERT INTO User (nom, prenom, email, email_mask, password, avatar) VALUES (?, ?, ?, ?, ?, ?);", [nom, prenom, email, email_mask, password, avatar], (error, results) => {
     if (error) throw error;
     });
 };
@@ -99,7 +99,7 @@ exports.delete = (user_id) => {
 exports.oneUser = (user_id) => {
     try {
         return new Promise((resolve) => {
-            connectionDB.query("SELECT id, nom, prenom, email FROM User WHERE id = ?;", [user_id], (error, results) => {
+            connectionDB.query("SELECT id, nom, prenom, email, avatar FROM User WHERE id = ?;", [user_id], (error, results) => {
                 if (results === undefined) {
                     resolve (error = "Erreur dans la requête");
                 }

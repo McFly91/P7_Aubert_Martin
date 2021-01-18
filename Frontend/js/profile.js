@@ -12,7 +12,7 @@ const passwordConfirmError = document.getElementById("passwordHelp_confirm");
 
 oneUser("http://localhost:3000/api/auth/profil")
     .then(response => {
-        avatar.src = "./images/avatars/avatar1.png"
+        avatar.src = response[0].avatar;
         nom.value = response[0].nom;
         prenom.value = response[0].prenom;
         email.value = response[0].email;

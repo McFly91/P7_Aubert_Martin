@@ -13,7 +13,7 @@ onePost(url)
         let li = document.createElement("li");
         li.classList.add("list-group-item", "bg-light", "pb-0", "mt-4");
         document.querySelector(".one_post").prepend(li);
-        let userHtml = "<h6>" + post[0].prenom + " " + post[0].nom + "</h6>";
+        let userHtml = "<div class='d-flex'><img src=" + post[0].avatar + " alt='Avatar de profil' class='w-25'><h6>"+ post[0].prenom + " " + post[0].nom + "</h6></div>";
         let datePostHtml = "<p class='font-italic'>" + dateCalcul(post[0].date_post) + "</p>";
         let titreHtml = "<h5 class='card-title font-weight-bold'>" + post[0].titre + "</h5>";
         let contenu_textHtml = "<p class='card-text'>" + post[0].contenu_text + "</p>";
@@ -58,10 +58,10 @@ onePost(url)
             // Modification d'un Post
             const modifyPost = document.getElementById("modify_post");
             modifyPost.addEventListener("click", () => {
-                titreHtml = "<div class='form-group'><label for='Titre'>Titre</label><input type='text' class='form-control' id='modify_titre' value='" + post[0].titre + "'><small id='titreHelp' class='form-text text-muted'></small></div>";
-                contenu_textHtml = "<div class='form-group'><label for='contenu'>Contenu</label><textarea class='form-control' id='modify_contenu_text' rows='3'>" + post[0].contenu_text + "</textarea>";
+                titreHtml = "<div class='form-group'><label for='Titre'>Titre</label><input type='text' class='form-control' id='modify_titre' value='" + post[0].titre + "'><small id='modify_titreHelp' class='form-text'></small></div>";
+                contenu_textHtml = "<div class='form-group' id='contenu'><label for='contenu'>Contenu</label><textarea class='form-control' id='modify_contenu_text' rows='3'>" + post[0].contenu_text + "</textarea>";
                 cardImg = "<p class='text-center'><img class='card-img-bottom py-2 w-25' src=" + post[0].contenu_media + " alt='media post'></p>";
-                modifyImg = "<input type='file' id='modify_contenu_media' class='btn'><small id='modify_contenuHelp' class='form-text text-muted'></small></div>";
+                modifyImg = "<input type='file' id='modify_contenu_media' class='btn'><small id='modify_contenuHelp' class='form-text'></small></div>";
                 cardBodyText = "<div class='card-body px-0 py-0'><form id='modify_form_post' name='form' class='list-group-item'>" + titreHtml + contenu_textHtml;
                 let modifySubmit = "<div class='col d-flex justify-content-around'><input type='submit' class='btn btn-primary' value='Publier'></div></form>";
 
@@ -79,6 +79,11 @@ onePost(url)
                 modifyFormPost.addEventListener("submit", (event) => {
                     event.preventDefault();
                     const image = document.getElementById("modify_contenu_media").files;
+                    const titre = document.getElementById("modify_titre");
+                    const contenu = document.getElementById("contenu");
+                    const contenuText = document.getElementById("modify_contenu_text");
+                    const titreError = document.getElementById("modify_titreHelp");
+                    const contenuError = document.getElementById("modify_contenuHelp");
                     const postModified = {
                         titre: document.getElementById("modify_titre").value,
                         contenu_text: document.getElementById("modify_contenu_text").value
@@ -96,8 +101,7 @@ onePost(url)
                                     console.log("Post modifié");
                                 }
                                 else {
-                                    let errorInfo = document.getElementById("modify_contenuHelp");
-                                    errorInfo.textContent = responseModifyPost.error;
+                                    errorInfosMedia(titre, contenuText, contenu, image[0], titreError, contenuError, "Un titre doit être indiqué et il ne doit pas commencer par un caractère spécial", "Un contenu doit être entré (texte ou media) et il ne doit pas commencer par un caractère spécial");
                                 } 
                             })
                             .catch((error) => {console.error(error, "Problème de communication avec l'API")});
@@ -111,8 +115,7 @@ onePost(url)
                                     console.log("Post modifié");
                                 }
                                 else {
-                                    let errorInfo = document.getElementById("modify_contenuHelp");
-                                    errorInfo.textContent = responseModifyPost.error;
+                                    errorInfos(titre, contenuText, titreError, contenuError, "Un titre doit être indiqué et il ne doit pas commencer par un caractère spécial", "Un contenu doit être entré (texte ou media) et il ne doit pas commencer par un caractère spécial");
                                 } 
                             })
                             .catch((error) => {console.error(error, "Problème de communication avec l'API")}); 

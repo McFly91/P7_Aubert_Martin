@@ -12,6 +12,8 @@ const apiLimiter = rateLimit({
 
 router.post("/signup", userCtrl.signup);
 
+router.get("/avatars", userCtrl.avatars);
+
 router.post("/login", apiLimiter, userCtrl.login);
 
 router.put("/modify_infos", auth, userCtrl.modifyUserInfos);
