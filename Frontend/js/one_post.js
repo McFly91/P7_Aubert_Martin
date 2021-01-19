@@ -94,31 +94,29 @@ onePost(url)
                         const data = new FormData();
                         data.append("image", image[0]);
                         data.append("post", JSON.stringify(postModified));
-                        modifyPostWithMedia(url, data)
-                            .then(responseModifyPost => {
-                                if (responseModifyPost.status === 200) {
-                                    document.location.reload();
-                                    console.log("Post modifié");
-                                }
-                                else {
-                                    errorInfosMedia(titre, contenuText, contenu, image[0], titreError, contenuError, "Un titre doit être indiqué et il ne doit pas commencer par un caractère spécial", "Un contenu doit être entré (texte ou media) et il ne doit pas commencer par un caractère spécial");
-                                } 
-                            })
-                            .catch((error) => {console.error(error, "Problème de communication avec l'API")});
+                        if ((inputRegex.test(titre.value) === true) && ((((contenuText.value !== "") && (inputRegex.test(contenuText.value) === true)) && (image[0] !== undefined)) || ((contenuText.value === "") && (image[0] !== undefined)))) {
+                            modifyPostWithMedia(url, data)
+                                .then(() => {
+                                        document.location.reload();
+                                })
+                                .catch((error) => {console.error(error, "Problème de communication avec l'API")});
+                        }
+                        else {
+                            errorInfosMedia(titre, contenuText, contenu, image[0], titreError, contenuError, "Un titre doit être indiqué et il ne doit pas commencer par un caractère spécial", "Un contenu doit être entré (texte ou media) et il ne doit pas commencer par un caractère spécial");
+                        }
                     }
                     // Modification d'un Post sans image
                     else {
+                        if ((inputRegex.test(titre.value) === true) && (inputRegex.test(contenuText.value) === true)) {
                         modifyPostWithoutMedia(url, postModified)
-                            .then(responseModifyPost => {
-                                if (responseModifyPost.status === 200) {
-                                    document.location.reload();
-                                    console.log("Post modifié");
-                                }
-                                else {
-                                    errorInfos(titre, contenuText, titreError, contenuError, "Un titre doit être indiqué et il ne doit pas commencer par un caractère spécial", "Un contenu doit être entré (texte ou media) et il ne doit pas commencer par un caractère spécial");
-                                } 
+                            .then(() => {
+                                document.location.reload();
                             })
-                            .catch((error) => {console.error(error, "Problème de communication avec l'API")}); 
+                            .catch((error) => {console.error(error, "Problème de communication avec l'API")});
+                        }
+                        else {
+                            errorInfos(titre, contenuText, titreError, contenuError, "Un titre doit être indiqué et il ne doit pas commencer par un caractère spécial", "Un contenu doit être entré (texte ou media) et il ne doit pas commencer par un caractère spécial");
+                        } 
                     }
                 })
             })
@@ -224,28 +222,28 @@ onePost(url)
                 li.classList.add("list-group-item", "bg-light", "py-0");
                 document.querySelector(".all_comment").prepend(li);
                 let commentFormHtml = "<textarea class='form-control' id='comment' rows='1' placeholder='Nouveau commentaire...'></textarea>";
-                let textInfo = "<small id='commentHelp' class='form-text text-muted'></small>"
+                let textInfo = "<small id='commentHelp' class='form-text'></small>"
                 let submit = "<input type='submit' class='btn btn-primary mx-1' id='form_submit' value='Publier'>";
                 li.innerHTML = "<form id='form' name='form' class='list-group-item bg-light py-1 px-0'><div class='form-group d-flex'>" + commentFormHtml + textInfo + submit + "</div></form>";
                 // Creation d'un nouveau commentaire
                 const form = document.getElementById("form");
                 form.addEventListener("submit", (event) => {
-                event.preventDefault();
-                const comment = {
-                    comment_post: document.getElementById("comment").value,
-                };
-                newComment(url + "/comment", comment)
-                    .then(responseNewComment => {
-                        if (responseNewComment.status === 201) {
-                            document.location.reload();
-                            console.log("Commentaire ajouté");
-                        }
-                        else {
-                            let errorInfo = document.getElementById("commentHelp");
-                            errorInfo.textContent = responseNewComment.error;
-                        }
-                    })
-                    .catch((error) => {console.error(error, "Problème de communication avec l'API")});
+                    event.preventDefault();
+                    const commentPost = document.getElementById("comment");
+                    const commentError = document.getElementById("commentHelp");
+                    const comment = {
+                        comment_post: commentPost.value,
+                    };
+                    if (inputRegex.test(commentPost.value) === true) {
+                    newComment(url + "/comment", comment)
+                        .then(() => {
+                                document.location.reload();
+                        })
+                        .catch((error) => {console.error(error, "Problème de communication avec l'API")});
+                    }
+                    else {
+                        errorInput(commentPost, commentError, "Un contenu doit être entré et il ne doit pas commencer par un caractère spécial");
+                    }
                 })
                 // FIN SECTION nouveau commentaire //
             })

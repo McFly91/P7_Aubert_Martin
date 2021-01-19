@@ -101,16 +101,16 @@ formInfos.addEventListener("keyup", () => {
             prenom: prenom.value,
             email: email.value
         }
-        modifyUserInfos("http://localhost:3000/api/auth/modify_infos", userModified)
-            .then(responseUserModified => {
-                if (responseUserModified.status === 200) {
-                    document.location.reload();
-                }
-                else {
-                    errorInfos(nom, prenom, email, nomError, prenomError, emailError, "Nom incorrect", "Prenom incorrect", "Email incorrect ou n'appartenant pas à Groupomania");
-                }
-            })
-            .catch((error) => {console.error(error, "Problème de communication avec l'API")})
+        if ((nameRegex.test(nom.value) === true) && (nameRegex.test(prenom.value) === true) && (emailRegex.test(email.value) === true)) {
+            modifyUserInfos("http://localhost:3000/api/auth/modify_infos", userModified)
+                .then(() => {
+                        document.location.reload();
+                })
+                .catch((error) => {console.error(error, "Problème de communication avec l'API")})
+        }
+        else {
+            errorInfos(nom, prenom, email, nomError, prenomError, emailError, "Nom incorrect", "Prenom incorrect", "Email incorrect ou n'appartenant pas à Groupomania");
+        }
     })
 });
 // FIN SECTION MODIFICATION INFOS //
@@ -123,19 +123,15 @@ formPassword.addEventListener("keyup", () => {
         const passwordModified = {
             password: password.value
         }
-        if (password.value === passwordConfirm.value){
+        if ((password.value === passwordConfirm.value) && (passwordRegex.test(password.value) === true)) {
             modifyUserPassword("http://localhost:3000/api/auth/modify_password", passwordModified)
-                .then(responsePasswordModified => {
-                    if (responsePasswordModified.status === 200) {
+                .then(() => {
                         document.location.reload();
-                    }
-                    else {
-                        errorInput(password, passwordError, "Veuillez entrer un mot de passe contenant au moins 6 caractères dont 1 majuscule, 1 minuscule, 1 chiffre et 1 des caractères spéciaux");
-                    }
                 })
                 .catch((error) => {console.error(error, "Problème de communication avec l'API")})
         }
         else {
+            errorInput(password, passwordError, "Veuillez entrer un mot de passe contenant au moins 6 caractères dont 1 majuscule, 1 minuscule, 1 chiffre et 1 des caractères spéciaux");
             errorInput(passwordConfirm, passwordConfirmError, "Votre mot de passe doit être identique");
         }
     });

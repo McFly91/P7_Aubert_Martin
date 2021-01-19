@@ -54,22 +54,18 @@ form.addEventListener("submit", (event) => {
         avatar: avatarValue[0]
     }
 
-    if (password.value === passwordConfirm.value) {
+    if ((password.value === passwordConfirm.value) && (passwordRegex.test(password.value) === true) && (nameRegex.test(nom.value) === true) && (nameRegex.test(prenom.value) === true) && (emailRegex.test(email.value) === true)) {
         createUser("http://localhost:3000/api/auth/signup", idUser)
-        .then(response => {
-            if (response.status === 201 && password.value === passwordConfirm.value) {
+        .then(() => {
                 window.location.href = "index.html";
-            }
-            else {
-                errorInfos(nom, prenom, email, nomError, prenomError, emailError, "Nom incorrect", "Prenom incorrect", "Email incorrect ou n'appartenant pas à Groupomania");
-                errorInput(password, passwordError, "Veuillez entrer un mot de passe contenant au moins 6 caractères dont 1 majuscule, 1 minuscule, 1 chiffre et 1 des caractères spéciaux");
-            }
         })
         .catch((error) => {
             console.log(error, "Problème de communication avec l'API");
         });
     }
     else {
+        errorInfos(nom, prenom, email, nomError, prenomError, emailError, "Nom incorrect", "Prenom incorrect", "Email incorrect ou n'appartenant pas à Groupomania");
+        errorInput(password, passwordError, "Veuillez entrer un mot de passe contenant au moins 6 caractères dont 1 majuscule, 1 minuscule, 1 chiffre et 1 des caractères spéciaux")
         errorInput(passwordConfirm, passwordConfirmError, "Votre mot de passe doit être identique");
     }
 });

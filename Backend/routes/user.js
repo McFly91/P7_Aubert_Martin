@@ -20,7 +20,7 @@ router.put("/modify_infos", auth, userCtrl.modifyUserInfos);
 
 router.put("/modify_password", auth, userCtrl.modifyUserPassword);
 
-router.delete("/delete", auth, userCtrl.deleteUser);
+router.delete("/profil", auth, userCtrl.deleteUser);
 
 router.get("/avatars", userCtrl.avatars);
 
