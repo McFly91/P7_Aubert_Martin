@@ -1,6 +1,5 @@
 const form = document.getElementById("form");
 const submit = document.getElementById("form_submit");
-//const avatar = document.getElementById("avatars");
 const nom = document.getElementById("nom");
 const prenom = document.getElementById("prenom");
 const nomError = document.getElementById("nomHelp");
@@ -8,8 +7,11 @@ const prenomError = document.getElementById("prenomHelp");
 const passwordConfirm = document.getElementById("password_confirm");
 const passwordConfirmError = document.getElementById("passwordHelp_confirm");
 
-let avatarValue = [];
+// DEBUT SECTION AVATAR //
+// Tableau qui stock la valeur de l'avatar avec une valeur par défaut
+let avatarValue = ["avatar1.png"];
 
+// Affichage de l'ensemble des avatars
 chooseAvatar("http://localhost:3000/api/auth/avatars")
     .then(response => {
         response.forEach(avatar => {
@@ -17,9 +19,15 @@ chooseAvatar("http://localhost:3000/api/auth/avatars")
             input.classList.add("p-0", "m-1", "border-0", "rounded")
             input.value = avatar;
             input.id = avatar.replace(/.png/, "");
-            input.innerHTML = "<img src='../Backend/images/avatars/" + avatar + "' alt='Avatar de profil'></img>";
+            input.innerHTML = "<img src='../Backend/images/avatars/" + avatar + "' alt='Avatar de profil'>";
             document.getElementById("avatars").prepend(input);
+            
+            // Avatar selectionné par défaut
+            if(avatarValue[0] === "avatar1.png") {
+                document.getElementById("avatar1").classList.replace("border-0", "border");
+            };
 
+            // Au clic on selectionne un avatar et on renvoie sa valeur
             document.getElementById(input.id).addEventListener("click", (event) => {
                 event.preventDefault();
                 avatarValue = [];
@@ -32,9 +40,9 @@ chooseAvatar("http://localhost:3000/api/auth/avatars")
     .catch((error) => {
         console.log(error, "Problème de communication avec l'API");
     });
+// FIN SECTION AVATAR //
 
-    console.log(avatarValue[0]);
-
+// DEBUT SECTION FORMULAIRE D'ENREGISTREMENT //
 form.addEventListener("submit", (event) => {
     event.preventDefault();
     const idUser = {
@@ -65,3 +73,4 @@ form.addEventListener("submit", (event) => {
         errorInput(passwordConfirm, passwordConfirmError, "Votre mot de passe doit être identique");
     }
 });
+// FIN SECTION FORMULAIRE D'ENREGISTREMENT //

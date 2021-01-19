@@ -108,6 +108,22 @@ exports.login = (req, res, next) => {
         .catch((error) => {res.status(404).json({ error })})
 };
 
+exports.modifyUserAvatar = (req, res, next) => {
+    userModel.oneUser(res.locals.userId)
+        .then(
+            response => {
+                if (res.locals.userId === response[0].id) {
+                    userModel.modifyAvatar(
+                        `${req.protocol}://${req.get("host")}/images/avatars/${req.body.avatar}`,
+                        res.locals.userId
+                    )
+                    .then(() => res.status(200).json({ message : "Avatar modifié"}))
+                    .catch(error => res.status(500).json({ error }))
+                }
+        })
+        .catch((error) => {res.status(500).json({ error })})
+};
+
 exports.modifyUserInfos = (req, res, next) => {
     userModel.oneUser(res.locals.userId)
         .then(

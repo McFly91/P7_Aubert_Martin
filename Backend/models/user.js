@@ -42,6 +42,24 @@ exports.selectEncryptedEmailPassword = () => {
     };
 };
 
+exports.modifyAvatar = (avatar, user_id) => {
+    try {
+        return new Promise((resolve) => {
+            connectionDB.query("UPDATE User SET avatar = ? WHERE id = ?;", [avatar, user_id], (error, results) => {
+                if (results === undefined) {
+                    resolve (error = "Erreur dans la requête");
+                }
+                else {
+                    resolve (results);
+                }
+            });
+        });
+    }
+    catch (error) {
+        console.log(error);
+    };
+};
+
 exports.modifyInfos = (nom, prenom, email, email_mask, user_id) => {
     try {
         return new Promise((resolve) => {

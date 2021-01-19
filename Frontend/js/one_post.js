@@ -13,7 +13,7 @@ onePost(url)
         let li = document.createElement("li");
         li.classList.add("list-group-item", "bg-light", "pb-0", "mt-4");
         document.querySelector(".one_post").prepend(li);
-        let userHtml = "<div class='d-flex'><img src=" + post[0].avatar + " alt='Avatar de profil' class='w-25'><h6>"+ post[0].prenom + " " + post[0].nom + "</h6></div>";
+        let userHtml = "<div class='d-flex align-items-center'><img src=" + post[0].avatar + " alt='Avatar de profil' class='w-25'><h6>"+ post[0].prenom + " " + post[0].nom + "</h6></div>";
         let datePostHtml = "<p class='font-italic'>" + dateCalcul(post[0].date_post) + "</p>";
         let titreHtml = "<h5 class='card-title font-weight-bold'>" + post[0].titre + "</h5>";
         let contenu_textHtml = "<p class='card-text'>" + post[0].contenu_text + "</p>";
@@ -38,7 +38,7 @@ onePost(url)
         }
 
         // Affichage de l'ensemble des éléments sur la page HTML
-        let cardHeader = "<div class='card-header d-flex justify-content-between'>" + userHtml + datePostHtml + "</div>";
+        let cardHeader = "<div class='card-header d-flex justify-content-between align-items-center py-0 px-1'>" + userHtml + datePostHtml + "</div>";
         let cardBody = "<div class='card-body px-0 py-0'>" + titreHtml + "</div>";
         let cardBodyText = "<div class='card-body px-0 py-0'>" + titreHtml + contenu_textHtml + "</div>";
         let cardImg = "<p class='text-center'><img class='card-img-bottom py-2 w-25' src=" + post[0].contenu_media + " alt='media post'></p>";

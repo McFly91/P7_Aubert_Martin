@@ -50,6 +50,30 @@ const chooseAvatar = async (url) => {
     };
 };
 
+const modifyAvatar = async (url, data) => {
+    try {
+        let response = await fetch(url, {
+            method:"PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${sessionStorage.getItem("token")}`
+            },
+            body: JSON.stringify(data)
+        })
+        let responseJson = await response.json();
+
+        if (response.status === 200) {
+            return responseJson
+        }
+        else {
+            return responseJson
+        }
+    }
+    catch (error) {
+        console.error(error);
+    };
+};
+
 const loginUser = async (url, data) => {
     try {
         let response = await fetch(url, {

@@ -58,7 +58,7 @@ allPost("http://localhost:3000/api/post/")
             li.classList.add("list-group-item", "bg-light");
             document.querySelector(".all_posts").prepend(li);
             let cardLink = "<a class=stretched-link' href='one_post.html?id=" + post.id + "' style='text-decoration:none'>";
-            let userHtml = "<div class='d-flex'><img src=" + post.avatar + " alt='Avatar de profil' class='w-25'><h6>"+ post.prenom + " " + post.nom + "</h6></div>";
+            let userHtml = "<div class='d-flex align-items-center'><img src=" + post.avatar + " alt='Avatar de profil' class='w-25'><h6>"+ post.prenom + " " + post.nom + "</h6></div>";
             let datePostHtml = "<p class='font-italic'>" + dateCalcul(post.date_post) + "</p>";
             let titreHtml = "<h5 class='card-title font-weight-bold text-dark'>" + post.titre + "</h5>";
             let contenu_textHtml = "<p class='card-text text-dark'>" + post.contenu_text + "</p>";
@@ -66,7 +66,7 @@ allPost("http://localhost:3000/api/post/")
             let likeHtml = "<p><a class='fas fa-thumbs-up fa-2x pr-2' id='like_" + post.id + "'></a><span id='nb_like_" + post.id + "' class='pr-1'></span></p>";
             let dislikeHtml = "<p class='pt-2'><a class='fas fa-thumbs-down fa-2x align-middle' style='text-decoration:none' id='dislike_" + post.id + "'></a> <span id='nb_dislike_" + post.id + "' class='pr-1'></span></p>";
             let likeDislikeHtml = "<div class='d-flex m-1'>" + likeHtml + dislikeHtml + "</div>";
-            let cardHeader = "<div class='card-header d-flex justify-content-between'>" + userHtml + datePostHtml + "</div>";
+            let cardHeader = "<div class='card-header d-flex justify-content-between align-items-center py-0 px-1'>" + userHtml + datePostHtml + "</div>";
             let cardBody = "<div class='card-body px-0 py-0'>" + titreHtml + "</div>";
             let cardBodyText = "<div class='card-body px-0 py-0'>" + titreHtml + contenu_textHtml + "</div>";
             let cardImg = "<p class='text-center'><img class='card-img-bottom py-2 w-25' src=" + post.contenu_media + " alt='media post'></p>";
