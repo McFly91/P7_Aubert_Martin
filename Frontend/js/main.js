@@ -270,7 +270,6 @@ const addLikeDislike = async (url, data) => {
             body: JSON.stringify(data)
         })
         let responseJson = await response.json();
-        console.log(response, responseJson)
         if (response.status === 200) {
             return responseJson
         }
@@ -293,7 +292,6 @@ const allLikeDislike = async (url) => {
             },
         })
         let responseJson = await response.json();
-        console.log(response, responseJson)
         if (response.status === 200) {
             return responseJson
         }

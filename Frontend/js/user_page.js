@@ -56,12 +56,12 @@ allPost("http://localhost:3000/api/post/")
         document.getElementById("all_posts").append(ul);
         response.forEach(post => {
             let li = document.createElement("li");
-            li.classList.add("list-group-item", "bg-light");
+            li.classList.add("list-group-item", "bg-light", "post");
             document.querySelector(".all_posts").prepend(li);
             let cardLink = "<a class=stretched-link' href='one_post.html?id=" + post.id + "' style='text-decoration:none'>";
             let userHtml = "<div class='d-flex align-items-center'><img src=" + post.avatar + " alt='Avatar de profil' class='w-25'><h6>"+ post.prenom + " " + post.nom + "</h6></div>";
             let datePostHtml = "<p class='font-italic'>" + dateCalcul(post.date_post) + "</p>";
-            let titreHtml = "<h5 class='card-title font-weight-bold text-dark'>" + post.titre + "</h5>";
+            let titreHtml = "<h5 class='card-title font-weight-bold text-dark text'>" + post.titre + "</h5>";
             let contenu_textHtml = "<p class='card-text text-dark'>" + post.contenu_text + "</p>";
             let commentairesHtml = "<div id='comment_button_" + post.id + "'><p class='btn btn-primary'>Commentaires <span class='badge bg-secondary' id='" + post.id + "'></span></p></div>";
             let likeHtml = "<p><a class='fas fa-thumbs-up fa-2x pr-2' id='like_" + post.id + "'></a><span id='nb_like_" + post.id + "' class='pr-1'></span></p>";
@@ -100,7 +100,7 @@ allPost("http://localhost:3000/api/post/")
             let i = true;
             commentButton.addEventListener("click", () => {
                 if (i === false) {
-                    document.getElementById("comment_" + post.id).remove(document.getElementById("comment_" + post.id));
+                    document.getElementById("comment_" + post.id).remove();
                     i = true;
                 }
                 else {
@@ -123,7 +123,7 @@ allPost("http://localhost:3000/api/post/")
                             // DEBUT SECTION nouveau commentaire //
                             let li = document.createElement("li");
                             li.classList.add("list-group-item", "bg-light", "py-0");
-                            document.querySelector(".all_comment").prepend(li);
+                            document.getElementById("comment_" + post.id).prepend(li);
                             let commentFormHtml = "<textarea class='form-control' id='comment' rows='1' placeholder='Nouveau commentaire...'></textarea>";
                             let textInfo = "<small id='commentHelp' class='form-text'></small>"
                             let submit = "<input type='submit' class='btn btn-primary mx-1' id='form_submit' value='Publier'>";
@@ -199,6 +199,23 @@ allPost("http://localhost:3000/api/post/")
             });
             // FIN SECTION Like/Dislike //
         });
+
+        // DEBUT SECTION RECHERCHE //
+        const searchBar = document.getElementById("search");
+        // Rechercher un Post (Créateur, titre ou contenu)
+        searchBar.addEventListener('keyup', () => {
+            let searchValue = searchBar.value.toLowerCase();
+            let postSearch = document.querySelectorAll('.post');
+            Array.prototype.forEach.call(postSearch, (document) => {
+                if (document.textContent.toLowerCase().indexOf(searchValue) > -1) {
+                document.style.display = 'block';
+                }
+                else {
+                document.style.display = 'none';
+                }
+            });
+        });
+        // FIN SECTION RECHERCHE //
     })
     .catch((error) => {console.error(error, "Problème de communication avec l'API")});
 // FIN SECTION Affichage de l'ensemble des Posts //
