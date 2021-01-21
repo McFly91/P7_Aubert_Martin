@@ -119,6 +119,28 @@ const oneUser = async (url) => {
     };
 };
 
+const allUsersInfos = async (url) => {
+    try {
+        let response = await fetch(url, {
+            method:"GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${sessionStorage.getItem("token")}`
+            },
+        })
+        let responseJson = await response.json();
+        if (response.status === 200) {
+            return responseJson
+        }
+        else {
+            throw error
+        }
+    }
+    catch (error) {
+        console.error(error);
+    };
+};
+
 const modifyUserInfos = async (url, data) => {
     try {
         let response = await fetch(url, {
@@ -175,6 +197,29 @@ const deleteUser = async (url) => {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${sessionStorage.getItem("token")}`
             },
+        })
+        let responseJson = await response.json();
+        if (response.status === 200) {
+            return responseJson
+        }
+        else {
+            return responseJson.error
+        }
+    }
+    catch (error) {
+        console.log(error);
+    };
+};
+
+const adminDeleteUser = async (url, data) => {
+    try {
+        let response = await fetch(url, {
+            method:"DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${sessionStorage.getItem("token")}`
+            },
+            body: JSON.stringify(data)
         })
         let responseJson = await response.json();
         if (response.status === 200) {

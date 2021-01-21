@@ -22,8 +22,12 @@ router.put("/modify_password", auth, userCtrl.modifyUserPassword);
 
 router.delete("/profil", auth, userCtrl.deleteUser);
 
+router.delete("/user", auth, userCtrl.deleteUserByAdmin);
+
 router.get("/avatars", userCtrl.avatars);
 
 router.get("/profil", auth, userCtrl.getOneUser);
+
+router.get("/all_users", auth, userCtrl.getAllUsers);
 
 module.exports = router;

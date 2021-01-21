@@ -131,3 +131,21 @@ exports.oneUser = (user_id) => {
         console.log(error);
     };
 };
+
+exports.allUsers = () => {
+    try {
+        return new Promise((resolve) => {
+            connectionDB.query("SELECT id, nom, prenom, email FROM User WHERE role = 'user';", (error, results) => {
+                if (results === undefined) {
+                    resolve (error = "Erreur dans la requête");
+                }
+                else {
+                    resolve (results);
+                }
+            });
+        });
+    }
+    catch (error) {
+        console.log(error);
+    };
+};

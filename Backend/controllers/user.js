@@ -31,9 +31,6 @@ exports.signup = (req, res, next) => {
                     let decryptedEmail = cryptr.decrypt(result.email);
                     decryptedEmails.push(decryptedEmail);
                 }));
-                
-               //let avatar = `${req.protocol}://${req.get("host")}/images/avatars/${req.body.avatar}`;
-
                 if (decryptedEmails.includes(req.body.email) === false) {
                     if (nameRegex.test(req.body.nom) === true && nameRegex.test(req.body.prenom) === true && emailRegex.test(req.body.email) === true && passwordRegex.test(req.body.password) === true) {
                         bcrypt.hash(req.body.password, 10)
@@ -214,6 +211,14 @@ exports.deleteUser = (req, res, next) => {
         .catch(error => res.status(500).json({ error }))
 };
 
+exports.deleteUserByAdmin = (req, res, next) => {
+    if (res.locals.role === "admin") {
+        userModel.delete(req.body.id)
+            .then(() => res.status(200).json({ message : "Utilisateur supprimé"}))
+            .catch(error => res.status(500).json({ error }))
+    }
+};
+
 exports.getOneUser = (req, res, next) => {
     userModel.oneUser(res.locals.userId)
         .then(
@@ -232,4 +237,25 @@ exports.getOneUser = (req, res, next) => {
                 res.status(200).json(decryptedResponses);
             })
         .catch(error => res.status(500).json({ error }))
+};
+
+exports.getAllUsers = (req, res, next) => {
+    if (res.locals.role === "admin") {
+        userModel.allUsers()
+        .then(
+            response => {
+                let decryptedResponses = []
+                response.forEach((result => {
+                    let decryptedResponse = {
+                        id: result.id,
+                        nom: cryptr.decrypt(result.nom),
+                        prenom: cryptr.decrypt(result.prenom),
+                        email: cryptr.decrypt(result.email)
+                    }
+                    decryptedResponses.push(decryptedResponse);
+                }));
+                res.status(200).json(decryptedResponses);
+        })
+        .catch(error => res.status(500).json({ error }))
+    }
 };
