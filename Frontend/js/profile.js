@@ -31,10 +31,11 @@ if (role === "admin") {
             table.prepend(tr);
             tr.innerHTML= "<th scope='col' class='px-1'>user_Id</th><th scope='col' class='px-1'>Nom</th><th scope='col' class='px-1'>Prenom</th><th scope='col' class='px-1'>Email</th><th scope='col'>Supprimer</th>"
             let tbody = document.createElement("tbody");
-            table.append(tbody)
+            tbody.classList.add("users");
+            table.append(tbody);
             response.forEach(result => {
                 let tr = document.createElement("tr");
-                tr.classList.add("text-center");
+                tr.classList.add("text-center", "user");
                 tbody.append(tr);
                 let user_id = "<td>" + result.id + "</td>";
                 let nomUser = "<td>" + result.nom + "</td>";
@@ -57,6 +58,27 @@ if (role === "admin") {
         })
         .catch((error) => {console.error(error, "Problème de communication avec l'API")})
     // FIN SECTION AFFICHAGE DE L'ENSEMBLE DES UTILISATEURS //
+
+    // DEBUT SECTION RECHERCHE //
+    let divSearch = document.createElement("div");
+    divSearch.classList.add("form-inline", "my-2", 'my-lg-0');
+    document.getElementById("navbarSupportedContent").append(divSearch);
+    divSearch.innerHTML = "<input class='form-control mr-sm-2' type='search' placeholder='Rechercher...' aria-label='Rechercher' id='search'></input>";
+    const searchBar = document.getElementById("search");
+    // Rechercher un utilisateur (id, nom, prenom ou email)
+    searchBar.addEventListener('keyup', () => {
+        let searchValue = searchBar.value.toLowerCase();
+        let postSearch = document.querySelectorAll('.user');
+        Array.prototype.forEach.call(postSearch, (document) => {
+            if (document.textContent.toLowerCase().indexOf(searchValue) > -1) {
+            document.style.display = 'table-row';
+            }
+            else {
+            document.style.display = 'none';
+            }
+        });
+    });
+    // FIN SECTION RECHERCHE //
 }
 else {
     // DEBUT SECTION AFFICHAGE DE L'ENSEMBLE DES INFOS DU PROFIL //
