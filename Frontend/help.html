@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="Page d'afichage pour l'utilisateur Groupomania">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="icon" type="image/png" href="./images/icon_user.png"/>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link href="./css/all.css" rel="stylesheet">
+
+  <title>Groupomania - Profil</title>
+</head>
+
+<body>
+
+    <header>
+       <div class="container-fluid px-0">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
+            <h1 class="navbar-brand w-25">
+                <img src="./images/icon_user.png" class="img-fluid w-25" alt="Logo de la société">
+            </h1>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                  <li class="nav-item active">
+                    <a href="index.html" class="nav-link">Accueil</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="login_user.html" class="nav-link">Connexion</a>
+                  </li>
+                  <li class="nav-item">
+                      <a href="mailto:admin@groupomania.com" class="nav-link">Support</a>
+                  </li>
+                </ul>
+            </div>
+        </nav>
+       </div>
+    </header>
+
+    <section class="container">
+        <ul class="list-group my-3">
+            <h4 class="text-center">Inscription et connexion</h4>
+            <li class="list-group-item">
+            <p class="font-weight-bold">Comment créer un compte ?</p>
+            <p><i class="fas fa-arrow-right"></i> Une fois sur la page <a href="./index.html">Accueil</a>, cliquez sur <a href="./signup_user.html">Inscription</a> et rentrez les informations nécessaires à la validation de votre profil.</p>
+            </li>
+            <li class="list-group-item">
+                <p class="font-weight-bold">Je n'arrive pas à créer mon compte.</p>
+                <p><i class="fas fa-arrow-right"></i>  Pour pouvoir créer un compte et vous connecter, vous devez avoir une adresse email valide et appartenant au groupe Groupomania.</br>
+                    Vous devez également rentrer un nom, prénom et mot de passe correct (voir les instructions en cas d'erreur lors de la saisie).
+                </p>
+            </li>
+            <li class="list-group-item">
+                <p class="font-weight-bold">Comment se connecter à Groupomania ?</p>
+                <p><i class="fas fa-arrow-right"></i>  Une fois sur la page <a href="./index.html">Accueil</a> et votre compte créé, cliquez sur <a href="./login_user.html">Connexion</a> et rentrez votre email ainsi que votre mot de passe.</p>
+            </li>
+            <li class="list-group-item">
+                <p class="font-weight-bold">J'ai oublié mon mot de passe.</p>
+                <p><i class="fas fa-arrow-right"></i>  Si vous avez oublié votre mot de passe, vous devez contacter le support en cliquant sur <a href="mailto:admin@groupomania.com">Support</a>.</p>
+            </li>
+
+        </ul>
+        <ul class="list-group my-3">
+            <h4 class="text-center">Modification des informations depuis la page Profil</h4>
+            <li class="list-group-item">
+                <p class="font-weight-bold">Comment modifier ses informations une fois mon compte créé ?</p>
+                <p><i class="fas fa-arrow-right"></i> Vous pouvez modifier votre avatar, nom, prénom, email ou mot de passe depuis la page <a href="" id="profile">Profil</a> une fois que vous vous êtes connecté.</p>
+            </li>
+            <li class="list-group-item">
+                <p class="font-weight-bold">Puis-je supprimer mon compte définitivement ?</p>
+                <p><i class="fas fa-arrow-right"></i> Vous pouvez supprimer votre compte depuis votre page Profil. </br>
+                    <i class="fas fa-exclamation-triangle text-warning"></i> La suppression de votre compte est définitve et entraine la suppression de l'ensemble de vos informations, de vos posts et de vos commentaires.
+                </p>
+            </li>
+        </ul>
+        <ul class="list-group my-3">
+            <h4 class="text-center">Création, modification et suppression d'un post</h4>
+            <li class="list-group-item">
+                <p class="font-weight-bold">Comment créer un Post ?</p>
+                <p><i class="fas fa-arrow-right"></i> Vous devez vous connecter et vous serez redirigé sur la page regroupant l'ensemble des posts.</br>
+                Vous pouvez créer un Post depuis cette page en entrant un titre et un contenu. </br>
+                Vous devez renseigner obligatoirement un titre avec un contenu écrit et/ou un média.
+                </p>
+            </li>
+            <li class="list-group-item">
+                <p class="font-weight-bold">Je souhaite modifier mon Post déjà publié, comment faire ?</p>
+                <p><i class="fas fa-arrow-right"></i> Pour modifier un Post, vous devez en être l'auteur.</br>
+                    Il suffit ensuite de cliquer sur le Post en question et vous serez redirigé vers celui-ci.
+                    Cliquez sur l'icône <i class="fas fa-pencil-alt"></i> pour accéder à la modification de votre Post puis valider.
+                </p>
+            </li>
+            <li class="list-group-item">
+                <p class="font-weight-bold">Comment puis-je supprimer un Post ?</p>
+                <p><i class="fas fa-arrow-right"></i> Pour supprimer un Post, vous devez en être l'auteur.</br>
+                    Il suffit ensuite de cliquer sur le Post en question et vous serez redirigé vers celui-ci.
+                    Cliquez sur l'icône <i class="fas fa-times"></i> pour supprimer définitivement le Post.
+                </p>
+            </li>
+        </ul>
+    </section>
+  
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="./js/help.js"></script>
+
+</body>
+
+</html>
