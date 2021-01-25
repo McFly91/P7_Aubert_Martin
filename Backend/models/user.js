@@ -8,10 +8,10 @@ exports.userSchema = (nom, prenom, email, email_mask, password, avatar) => {
 
 exports.selectEncryptedEmail = () => {
     try {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             connectionDB.query("SELECT email FROM User;", (error, results) => {
                 if (results === undefined) {
-                    resolve (error = "Erreur dans la requête");
+                    reject (error = "Erreur dans la requête");
                 }
                 else {
                     resolve (results);
@@ -26,10 +26,10 @@ exports.selectEncryptedEmail = () => {
 
 exports.selectEncryptedEmailPassword = () => {
     try {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             connectionDB.query("SELECT id, email, password, role FROM User;", (error, results) => {
                 if (results === undefined) {
-                    resolve (error = "Erreur dans la requête");
+                    reject (error = "Erreur dans la requête");
                 }
                 else {
                     resolve (results);
@@ -44,10 +44,10 @@ exports.selectEncryptedEmailPassword = () => {
 
 exports.modifyAvatar = (avatar, user_id) => {
     try {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             connectionDB.query("UPDATE User SET avatar = ? WHERE id = ?;", [avatar, user_id], (error, results) => {
                 if (results === undefined) {
-                    resolve (error = "Erreur dans la requête");
+                    reject (error = "Erreur dans la requête");
                 }
                 else {
                     resolve (results);
@@ -62,10 +62,10 @@ exports.modifyAvatar = (avatar, user_id) => {
 
 exports.modifyInfos = (nom, prenom, email, email_mask, user_id) => {
     try {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             connectionDB.query("UPDATE User SET nom = ?, prenom = ?, email = ?, email_mask = ? WHERE id = ?;", [nom, prenom, email, email_mask, user_id], (error, results) => {
                 if (results === undefined) {
-                    resolve (error = "Erreur dans la requête");
+                    reject (error = "Erreur dans la requête");
                 }
                 else {
                     resolve (results);
@@ -80,10 +80,10 @@ exports.modifyInfos = (nom, prenom, email, email_mask, user_id) => {
 
 exports.modifyPassword = (password, user_id) => {
     try {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             connectionDB.query("UPDATE User SET password = ? WHERE id = ?;", [password, user_id], (error, results) => {
                 if (results === undefined) {
-                    resolve (error = "Erreur dans la requête");
+                    reject (error = "Erreur dans la requête");
                 }
                 else {
                     resolve (results);
@@ -116,10 +116,10 @@ exports.delete = (user_id) => {
 
 exports.oneUser = (user_id) => {
     try {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             connectionDB.query("SELECT id, nom, prenom, email, avatar FROM User WHERE id = ?;", [user_id], (error, results) => {
                 if (results === undefined) {
-                    resolve (error = "Erreur dans la requête");
+                    reject (error = "Erreur dans la requête");
                 }
                 else {
                     resolve (results);
@@ -134,10 +134,10 @@ exports.oneUser = (user_id) => {
 
 exports.allUsers = () => {
     try {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             connectionDB.query("SELECT id, nom, prenom, email FROM User WHERE role = 'user';", (error, results) => {
                 if (results === undefined) {
-                    resolve (error = "Erreur dans la requête");
+                    reject (error = "Erreur dans la requête");
                 }
                 else {
                     resolve (results);
