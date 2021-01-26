@@ -120,8 +120,6 @@ onePost(url)
                     }
                 })
             })
-        }
-
             // Suppression d'un Post
             const deletePost = document.getElementById("delete_post");
             deletePost.addEventListener("click", () => {
@@ -132,6 +130,7 @@ onePost(url)
                     }))  
                     .catch((error) => {console.error(error, "Problème de communication avec l'API")});
             })
+        }
         // FIN SECTION Modification d'un POST //
 
         // DEBUT SECTION Commentaires //

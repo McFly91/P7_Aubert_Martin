@@ -16,7 +16,7 @@ const section = document.getElementById("section")
 const presentation = document.getElementById("presentation")
 
 if (role === "admin") {
-    // DEBUT SECTION AFFICHAGE DE L'ENSEMBLE DES UTILISATEURS //
+    // DEBUT SECTION AFFICHAGE DE L'ENSEMBLE DES UTILISATEURS POUR ADMIN//
     presentation.remove(presentation);
     allUsersInfos("http://localhost:3000/api/auth/all_users")
         .then(response => {
@@ -57,7 +57,7 @@ if (role === "admin") {
             })
         })
         .catch((error) => {console.error(error, "Problème de communication avec l'API")})
-    // FIN SECTION AFFICHAGE DE L'ENSEMBLE DES UTILISATEURS //
+    // FIN SECTION AFFICHAGE DE L'ENSEMBLE DES UTILISATEURS POUR ADMIN//
 
     // DEBUT SECTION RECHERCHE //
     let divSearch = document.createElement("div");

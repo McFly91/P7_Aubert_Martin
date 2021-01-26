@@ -9,7 +9,7 @@ form.addEventListener("submit", (event) => {
     const contenuText = document.getElementById("contenu_text");
     const titreError = document.getElementById("titreHelp");
     const contenuError = document.getElementById("contenuHelp");
-    const post = {
+    let post = {
         titre: titre.value,
         contenu_text: contenuText.value
     };
@@ -51,6 +51,7 @@ form.addEventListener("submit", (event) => {
 // DEBUT SECTION Affichage de l'ensemble des Posts //
 allPost("http://localhost:3000/api/post/")
     .then(response => {
+        response.sort((a, b) => a.id - b.id);
         let ul = document.createElement("ul");
         ul.classList.add("container","px-0", "col-lg-6", "list-group", "all_posts");
         document.getElementById("all_posts").append(ul);
