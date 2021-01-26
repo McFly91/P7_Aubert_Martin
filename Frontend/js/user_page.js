@@ -9,7 +9,7 @@ form.addEventListener("submit", (event) => {
     const contenuText = document.getElementById("contenu_text");
     const titreError = document.getElementById("titreHelp");
     const contenuError = document.getElementById("contenuHelp");
-    let post = {
+    const post = {
         titre: titre.value,
         contenu_text: contenuText.value
     };
