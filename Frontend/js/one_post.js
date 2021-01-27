@@ -6,7 +6,6 @@ const role = sessionStorage.getItem("role");
 // DEBUT SECTION Affichage d'un Post //
 onePost(url)
     .then(post => {
-        console.log(post);
         let ul = document.createElement("ul");
         ul.classList.add("container","px-0", "col-lg-6", "list-group", "one_post");
         document.getElementById("one_post").append(ul);
@@ -120,17 +119,16 @@ onePost(url)
                     }
                 })
             })
-            // Suppression d'un Post
-            const deletePost = document.getElementById("delete_post");
-            deletePost.addEventListener("click", () => {
-                deleteOnePost(url)
-                    .then((responseDeletePost => {
-                        document.location.href="user_page.html";
-                        console.log(responseDeletePost);
-                    }))  
-                    .catch((error) => {console.error(error, "Problème de communication avec l'API")});
-            })
         }
+        // Suppression d'un Post
+        const deletePost = document.getElementById("delete_post");
+        deletePost.addEventListener("click", () => {
+            deleteOnePost(url)
+                .then(() => {
+                    document.location.href="user_page.html";
+                }) 
+                .catch((error) => {console.error(error, "Problème de communication avec l'API")});
+        })
         // FIN SECTION Modification d'un POST //
 
         // DEBUT SECTION Commentaires //
