@@ -121,14 +121,16 @@ onePost(url)
             })
         }
         // Suppression d'un Post
-        const deletePost = document.getElementById("delete_post");
-        deletePost.addEventListener("click", () => {
+        if (post[0].user_id == userId || role === "admin") {
+            const deletePost = document.getElementById("delete_post");
+            deletePost.addEventListener("click", () => {
             deleteOnePost(url)
                 .then(() => {
                     document.location.href="user_page.html";
                 }) 
                 .catch((error) => {console.error(error, "Problème de communication avec l'API")});
-        })
+            })
+        }
         // FIN SECTION Modification d'un POST //
 
         // DEBUT SECTION Commentaires //
